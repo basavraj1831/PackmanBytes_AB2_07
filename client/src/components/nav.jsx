@@ -1,36 +1,58 @@
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaUser, FaSignInAlt, FaBars, FaTimes } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { FaUser, FaSignInAlt, FaBars, FaTimes, FaSignOutAlt, FaCaretDown, FaTint, FaHandHoldingHeart } from 'react-icons/fa'
+
+import myLogo from '../assets/logo.png'
 
 function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const user = useSelector((state) => state.user);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const handleAuthClick = (path) => {
     navigate(path, {
-      state: { background: location },
-    });
-    setIsMenuOpen(false);
+      state: { background: location }
+    })
+    setIsMenuOpen(false)
+  }
+
+  const handleLogout = () => {
+    // Add logout logic here
+    navigate('/')
+    setIsProfileDropdownOpen(false)
+  }
+
+  const handleProfileAction = (action) => {
+    if (action === 'receiver') {
+      navigate('/profile', { state: { activeTab: 'donorList' } });
+    } else {
+      navigate(action);
+    }
+    setIsProfileDropdownOpen(false);
   };
 
   return (
-    <nav className="bg-black/90 backdrop-blur-md sticky top-0 z-50 shadow-lg transition-all duration-300">
+    <nav className="bg-black backdrop-blur-md sticky top-0 z-50 shadow-xl shadow-black/50 transition-all duration-300">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link
-            to="/"
-            className="text-red-500 text-xl sm:text-2xl font-bold flex items-center gap-2"
-          >
-            <span className="text-2xl sm:text-3xl">❤</span>
-            Blood Donation
+          <Link to="/" className="text-red-500 text-xl sm:text-2xl font-bold flex items-center gap-2 p-2">
+            <img 
+              src={myLogo}
+              alt="Blood Donation Logo" 
+              style={{ 
+                height: '70px', 
+                width: 'auto',
+                padding: '4px',
+                filter: 'brightness(1.1)' // Makes the image slightly brighter
+              }} 
+              className="hover:scale-105 transition-transform duration-200"
+            />
           </Link>
 
           {/* Mobile menu button */}
-          <button
+          <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-white hover:text-red-500 transition-colors"
           >
@@ -40,106 +62,132 @@ function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center justify-center flex-1 px-4">
             <div className="flex space-x-8">
-              <Link
-                to="/home"
-                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-              >
+              <Link to="/home" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
                 Home
               </Link>
-              <Link
-                to="/donor"
-                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-              >
+              <Link to="/donor" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
                 Donate
               </Link>
-              <Link
-                to="/request"
-                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-              >
+              <Link to="/request" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
                 Request Blood
               </Link>
-              <Link
-                to="/about"
-                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-              >
+              <Link to="/about" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
                 About
               </Link>
             </div>
           </div>
 
-          {/* Desktop Account Section */}
+          {/* Desktop Account Section - Updated with Enhanced Dropdown */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* {!user.isLoggedIn ? ( */}
-              <button
-                onClick={() => handleAuthClick("/login")}
-                className="flex items-center gap-2 text-white hover:text-red-500 transition-colors font-medium"
-              >
-                <FaSignInAlt className="text-lg" />
-                <span>Login</span>
-              </button>
-            {/* ) : ( */}
-              <Link
-                to="/account"
-                className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors font-medium shadow-lg"
-              >
-                <FaUser />
-                <span>Account</span>
-              </Link>
-            {/* )} */}
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <div
-          className={`md:hidden transition-all duration-300 ${
-            isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          } overflow-hidden`}
-        >
-          <div className="flex flex-col gap-2 py-4">
-            <Link
-              to="/home"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-            >
-              Home
-            </Link>
-            <Link
-              to="/donor"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-            >
-              Donate
-            </Link>
-            <Link
-              to="/request"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-            >
-              Request Blood
-            </Link>
-            <Link
-              to="/about"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
-            >
-              About
-            </Link>
-            <div className="border-t border-gray-700 my-2"></div>
-            <button
-              onClick={() => handleAuthClick("/login")}
-              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium w-full"
+            <button 
+              onClick={() => handleAuthClick('/login')}
+              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors font-medium"
             >
               <FaSignInAlt className="text-lg" />
               <span>Login</span>
             </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors font-medium shadow-lg"
+              >
+                <FaUser />
+                <span>Profile</span>
+                <FaCaretDown className={`transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Enhanced Profile Dropdown */}
+              {isProfileDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                  <Link
+                    to="/profile"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    onClick={() => handleProfileAction('/profile')}
+                  >
+                    <FaUser className="text-sm" />
+                    <span>View Profile</span>
+                  </Link>
+                  <Link
+                    to="/donor"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    onClick={() => handleProfileAction('/donor')}
+                  >
+                    <FaTint className="text-sm" />
+                    <span>Donor</span>
+                  </Link>
+                  <button
+                    onClick={() => handleProfileAction('receiver')}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
+                  >
+                    <FaHandHoldingHeart className="text-sm" />
+                    <span>Receiver</span>
+                  </button>
+                  <div className="border-t border-gray-100 my-1"></div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
+                  >
+                    <FaSignOutAlt className="text-sm" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Navigation - Updated with Enhanced Options */}
+        <div className={`md:hidden transition-all duration-300 ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+          <div className="flex flex-col gap-2 py-4">
+            <Link to="/home" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              Home
+            </Link>
+            <Link to="/donor" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              Donate
+            </Link>
+            <Link to="/request" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              Request Blood
+            </Link>
+            <Link to="/about" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              About
+            </Link>
             <Link
-              to="/account"
-              className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors mx-3 font-medium shadow-lg w-full justify-center"
+              to="/profile"
+              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+              onClick={() => setIsMenuOpen(false)}
             >
               <FaUser />
-              <span>Account</span>
+              <span>View Profile</span>
             </Link>
+            <Link
+              to="/donor"
+              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FaTint />
+              <span>Donor</span>
+            </Link>
+            <Link
+              to="/request"
+              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FaHandHoldingHeart />
+              <span>Receiver</span>
+            </Link>
+            <div className="border-t border-gray-700 my-2"></div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium w-full"
+            >
+              <FaSignOutAlt />
+              <span>Logout</span>
+            </button>
           </div>
         </div>
       </div>
     </nav>
-  );
+  )
 }
 
-export default Navbar;
+export default Navbar
