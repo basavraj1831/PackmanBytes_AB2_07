@@ -10,6 +10,8 @@ import RequestBlood from './components/RequestBlood'
 import BloodTypes from './components/BloodTypes'
 import Login from './components/Login'
 import Signup from './components/Signup'
+import EmailVerify from './components/EmailVerify'
+import ResetPassword from './components/ResetPassword'
 
 function App() {
   const location = useLocation();
@@ -39,6 +41,8 @@ function App() {
         <Route path="/donor" element={<Donor />} />
         <Route path="/request" element={<RequestBlood />} />
         <Route path="/learn" element={<BloodTypes />} />
+        <Route path='/email-verify' element={<EmailVerify/>}/>
+        <Route path='/forgot-password' element={<ResetPassword/>}/>
       </Routes>
 
       {/* Show auth modals when we have a background location */}

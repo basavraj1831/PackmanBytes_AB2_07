@@ -26,6 +26,11 @@ function Login() {
     }));
   };
 
+  const forgotPassword = () => {
+    localStorage.setItem("resetPasswordVerificationRequired", "true");
+    navigate('/forgot-password');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -147,9 +152,9 @@ function Login() {
                   Remember me
                 </label>
               </div>
-              <Link to="/forgot-password" className="text-sm text-red-600 hover:text-red-700">
+              <p onClick={forgotPassword} className="text-sm text-red-600 hover:text-red-700">
                 Forgot password?
-              </Link>
+              </p>
             </div>
 
             {/* Error Message */}

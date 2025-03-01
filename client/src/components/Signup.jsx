@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaEnvelope, FaLock, FaArrowRight, FaUser, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Signup() {
   const navigate = useNavigate();
@@ -61,27 +62,30 @@ function Signup() {
     setIsSubmitting(true);
     setError('');
 
-    try {
-      // Add your signup API call here
-      const response = await fetch('/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Registration failed');
-      }
-
-      // Handle successful registration
-      // Redirect or update auth state
-    } catch (error) {
-      setError('Registration failed. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+   try {
+         const response = await fetch(
+           `http://localhost:3000/api/auth/register`,
+           {
+             method: "post",
+             headers: { "Content-type": "application/json" },
+             credentials: "include",
+             body: JSON.stringify(formData),
+           }
+         );
+   
+         const data = await response.json();
+   
+         if (!response.ok) {
+           return ("error", data.message);
+         }
+         localStorage.setItem("emailVerificationRequired", "true");
+         navigate('/email-verify');
+         toast.success( data.message);
+       } catch (error) {
+         toast.error(error.message); 
+       } finally {
+         setIsSubmitting(false);
+       }
   };
 
   return (
