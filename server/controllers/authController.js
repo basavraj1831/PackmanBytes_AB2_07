@@ -198,58 +198,6 @@ export const GoogleLogin = async (req, res, next) => {
   }
 };
 
-export const GuestLogin = async (req, res, next) => {
-  try {
-    const { email, name, avatar } = req.body;
-    let user = await User.findOne({ email });
-    let message;
-
-    if (!user) {
-      const password = Math.round(Math.random() * 1000000000).toString();
-      const hashedPassword = bcryptjs.hashSync(password, 10);
-      const newUser = new User({
-        name,
-        email,
-        password: hashedPassword,
-        avatar,
-      });
-
-      user = await newUser.save();
-      message = "Welcome, Guest.";
-    } else {
-      message = "Welcome back, Guest!";
-    }
-
-    const token = jwt.sign(
-      {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-      },
-      process.env.JWT_SECRET
-    );
-
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      path: "/",
-    });
-
-    const newUser = user.toObject({ getters: true });
-    delete newUser.password;
-
-    res.status(200).json({
-      success: true,
-      user: newUser,
-      message,
-    });
-  } catch (error) {
-    next(handleError(500, error.message));
-  }
-};
-
 export const verifyEmail = async (req, res) => {
   const { otp } = req.body;
   if (!otp) {

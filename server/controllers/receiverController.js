@@ -31,12 +31,11 @@ export const addReceiver = async (req, res, next) => {
 
     await receiver.save();
 
-    // Find donors within a 5km radius
     const donors = await Donor.find({
       location: {
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: 5000, // 5 km in meters
+          $maxDistance: 5000, 
         },
       },
       available: true,

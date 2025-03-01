@@ -1,5 +1,8 @@
 import { handleError } from "../helpers/handleError.js";
 import Donor from "../models/donorModel.js";
+import nodemailer from "nodemailer";
+import User from "../models/userModel.js";
+import { REGISTER_COMPLETE_TEMPLATE } from "../config/emailTemplates.js";
 
 export const getDonors = async (req, res, next) => {
   try {
@@ -14,7 +17,6 @@ export const getDonors = async (req, res, next) => {
 
 export const addDonor = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { name, email, phone, age, gender, bloodGroup, location, available ,city, district, state, country } =
       req.body;
   
@@ -45,10 +47,29 @@ export const addDonor = async (req, res, next) => {
 
     await donor.save();
 
+    const transporter = nodemailer.createTransport({
+          host: "smtp-relay.brevo.com",
+          port: 587,
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASSWORD,
+          },
+        });
+    
+        const mailOptions = {
+          from: process.env.SENDER_EMAIL,
+          to: email,
+          subject: "Registration Completed",
+          html: REGISTER_COMPLETE_TEMPLATE.replace("{{name}}", name),
+        };
+    
+        transporter.sendMail(mailOptions);
+
     res.status(200).json({
       success: true,
       message: "Donor added successfully",
     });
+
   } catch (error) {
     next(error);
   }
