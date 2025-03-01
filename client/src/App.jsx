@@ -14,7 +14,6 @@ import Signup from './components/Signup'
 function App() {
   const location = useLocation();
   const background = location.state && location.state.background;
-  console.log("TP");
   
   useEffect(() => {
     const handleScroll = () => {

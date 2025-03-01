@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { FaEnvelope, FaLock, FaArrowRight } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify'
+import { getEnv } from '../helpers/getEnv';
+import { useDispatch } from "react-redux";
+import { setUser } from '../redux/user/userSlice';
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const [formData, setFormData] = useState({
     email: '',
@@ -27,23 +32,26 @@ function Login() {
     setError('');
 
     try {
-      // Add your login API call here
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/auth/login`,
+        {
+          method: "post",
+          headers: { "Content-type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Invalid credentials');
+        return ("error", data.message);
       }
-
-      // Handle successful login
-      // Redirect or update auth state
+      dispatch(setUser(data.user));
+      navigate('/');
+      toast.success( data.message);
     } catch (error) {
-      setError('Invalid email or password');
+      toast.error(error.message); 
     } finally {
       setIsSubmitting(false);
     }

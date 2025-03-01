@@ -12,7 +12,7 @@ export const addReceiver = async (req, res, next) => {
       return next(handleError(400, "Invalid location data. Latitude and Longitude are required."));
     }
 
-    const [latitude, longitude] = location.coordinates;
+    const [longitude,latitude] = location.coordinates;
 
     const receiver = new Receiver({
       name,

@@ -5,8 +5,13 @@ import {
   FaFilter, FaMapMarkerAlt, FaClock, FaHospital, FaPhoneAlt,
   FaCalendarAlt, FaBell, FaArrowRight
 } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 function Home() {
+  const user = useSelector((state) => state.user);
+
+  console.log(user);
+
   const [activeTab, setActiveTab] = useState('donors');
   const [donorSearchTerm, setDonorSearchTerm] = useState('');
   const [requestSearchTerm, setRequestSearchTerm] = useState('');
