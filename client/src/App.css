@@ -1,0 +1,338 @@
+@import "tailwindcss";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+.slider-container .slick-prev,
+.slider-container .slick-next {
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+}
+
+.slider-container .slick-prev {
+  left: 20px;
+}
+
+.slider-container .slick-next {
+  right: 20px;
+}
+
+.slider-container .slick-dots {
+  bottom: 20px;
+}
+
+.slider-container .slick-dots li button:before {
+  color: white;
+  font-size: 12px;
+}
+
+.slider-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.slider-container .slick-slide {
+  height: 600px;
+  position: relative;
+}
+
+.slider-container .slick-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slider-wrapper {
+  width: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.slider-item {
+  width: 100%;
+  height: 500px;
+  padding: 0 8px;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.slick-slide div {
+  outline: none;
+}
+
+.slider-wrapper .slick-slide {
+  transform: scale(0.85) translateY(20px);
+  filter: brightness(0.6) saturate(0.8);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slider-wrapper .slick-center {
+  transform: scale(1) translateY(0);
+  filter: brightness(1) saturate(1.2);
+  z-index: 10;
+}
+
+.slider-wrapper h2 {
+  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.5px;
+}
+
+.slider-wrapper p {
+  text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider-wrapper .slick-slide > div {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slider-wrapper .slick-prev,
+.slider-wrapper .slick-next {
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  z-index: 20;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.slider-wrapper .slick-prev:hover,
+.slider-wrapper .slick-next:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slider-wrapper .slick-prev:before,
+.slider-wrapper .slick-next:before {
+  font-size: 24px;
+  color: white;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.slider-wrapper .slick-dots {
+  bottom: -30px;
+}
+
+.slider-wrapper .slick-dots li button:before {
+  font-size: 12px;
+  color: var(--primary-red);
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.slider-wrapper .slick-dots li.slick-active button:before {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+@media (hover: hover) {
+  .slider-wrapper .slick-slide:hover {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.slider-wrapper .slick-center {
+  animation: none;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slider-wrapper .slick-active h2,
+.slider-wrapper .slick-active p,
+.slider-wrapper .slick-active button {
+  animation: slideUpFade 0.8s ease forwards;
+}
+
+.slider-wrapper .slick-active p {
+  animation-delay: 0.2s;
+}
+
+.slider-wrapper .slick-active button {
+  animation-delay: 0.4s;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.slider-wrapper .slick-active .gradient-text {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* Update slider hover effects */
+.slider-wrapper .slick-slide:not(.slick-center):hover {
+  transform: scale(0.85) translateY(20px) !important;
+}
+
+/* Update color scheme */
+:root {
+  --primary-red: #dc2626;
+  --primary-dark: #111827;
+  --primary-light: #f3f4f6;
+}
+
+/* Navbar blur effect on scroll */
+.nav-scrolled {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Update existing slider styles */
+.slider-wrapper .slick-prev,
+.slider-wrapper .slick-next {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.slider-wrapper .slick-prev:hover,
+.slider-wrapper .slick-next:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.slider-wrapper .slick-prev:before,
+.slider-wrapper .slick-next:before {
+  color: white;
+}
+
+/* Update dots color */
+.slider-wrapper .slick-dots li button:before {
+  color: var(--primary-red);
+}
+
+/* Add subtle scale animation instead */
+@keyframes subtle-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.slider-wrapper .slick-center {
+  animation: subtle-scale 4s ease-in-out infinite;
+}
+
+/* Add these new styles */
+@keyframes gentle-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.animate-gentle-pulse {
+  animation: gentle-pulse 2s infinite;
+}
+
+/* Highlight animation */
+@keyframes highlight-slide {
+  from {
+    transform: translateX(-100%) skewX(45deg);
+  }
+  to {
+    transform: translateX(100%) skewX(45deg);
+  }
+}
+
+.highlight-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.highlight-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: highlight-slide 2s infinite;
+}
+
+/* Add this for the glowing effect */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255,255,255,0.4);
+  }
+}
+
+.glow-effect {
+  animation: glow 3s ease-in-out infinite;
+}

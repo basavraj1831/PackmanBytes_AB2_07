@@ -460,6 +460,60 @@ export const REGISTER_COMPLETE_TEMPLATE = `
 </html>
 `;
 
+export const DONOR_REQUEST_COMPLETE_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Eventopia</title>
+</head>
+<body>
+<table style="font-family:'Lato',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 10px 30px;font-family:'Lato',sans-serif;" align="center">
+        
+        <div style="background:#facc15;padding:20px;border-radius:8px 8px 0 0;text-align:center;">
+            <img src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1739870541/Event/Email/wmtmuhcbejvc8svqrpsf.png" alt="" style="width:120px;height:50px;">
+            <h1 style="color:#ffffff;font-size:24px;font-family:'Times New Roman', Times, serif;margin-top:10px;">Donation Request</h1>
+        </div>
+
+      </td>
+    </tr>
+
+    <tr>
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:30px;font-family:'Lato',sans-serif;" align="left">
+        
+        <div style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
+            <p style="font-size: 18px; line-height: 25.2px; color: #666666; font-family: Quicksand;">Dear <strong>{{name}}</strong>,</p>
+            <p style="font-size: 16px; line-height: 22.4px; color: #666666; font-family: Quicksand;margin-top:20px;">
+                Thank you for your generous blood donation! Your request has been successfully processed, and you are now eligible to donate again.
+            </p>
+            <p style="font-size: 16px; line-height: 22.4px; color: #666666; font-family: Quicksand;margin-top:20px;">
+                Your kindness helps save lives, and we truly appreciate your support. Feel free to reach out to us for your next donation.
+            </p>
+            <p style="font-size: 16px; line-height: 22.4px; color: #666666; font-family: Quicksand;margin-top:30px;">
+                Best Regards,<br>
+                <strong>The Support Team</strong>
+            </p>
+        </div>
+
+      </td>
+    </tr>
+
+    <tr>
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 40px;text-align:center;">
+        <a href="https://auth-31.onrender.com/login" style="background:#007bff;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:5px;font-size:16px;font-family:'Lato',sans-serif;display:inline-block;">Log into Account</a>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+</body>
+</html>
+`;
+
 export const NEW_EVENT_TEMPLATE = `
 <!DOCTYPE html>
 <html lang="en">
