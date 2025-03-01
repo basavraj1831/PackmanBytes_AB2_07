@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
   FaTint, FaUserPlus, FaHandHoldingHeart, FaSearch, 
   FaFilter, FaMapMarkerAlt, FaClock, FaHospital, FaPhoneAlt,
@@ -14,113 +15,37 @@ function Home() {
   const [expandedDonor, setExpandedDonor] = useState(null);
   const [expandedRequest, setExpandedRequest] = useState(null);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  
-  const donorResponses = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+91 98765 43210",
-      age: 28,
-      gender: "Male",
-      bloodGroup: "A+",
-      location: {
-        type: "Point",
-        coordinates: [72.8777, 19.0760] // longitude, latitude
-      },
-      city: "Mumbai",
-      state: "Maharashtra",
-      district: "Mumbai Suburban",
-      country: "India",
-      available: true,
-      createdAt: "2024-01-15T10:30:00Z"
-    },
-    {
-      id: 2,
-      name: "Sarah Smith",
-      bloodGroup: "O-",
-      location: "Brooklyn",
-      status: "Available",
-      lastDonation: "2024-02-01",
-      distance: "3.8 km",
-      age: 32,
-      phone: "+1 234-567-8901",
-      donationCount: 8
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      bloodGroup: "B+",
-      location: "Queens",
-      status: "Available",
-      lastDonation: "2024-02-15",
-      distance: "5.2 km",
-      age: 35,
-      phone: "+1 234-567-8902",
-      donationCount: 3
-    },
-    // Add more donors...
-  ];
+  const [donorResponses, setDonorResponses] = useState([]);
+  const [receiverRequests, setReceiverRequests] = useState([]);
 
-  const receiverRequests = [
-    {
-      id: 1,
-      name: "Michael Brown",
-      email: "michael@example.com",
-      phone: "+91 98765 43211",
-      age: 45,
-      gender: "Male",
-      bloodGroup: "B+",
-      location: {
-        type: "Point",
-        coordinates: [72.8777, 19.0760]
-      },
-      city: "Mumbai",
-      state: "Maharashtra",
-      district: "Mumbai Suburban",
-      country: "India",
-      hospital: "City General Hospital",
-      createdAt: "2024-03-15T08:30:00Z"
-    },
-    {
-      id: 2,
-      name: "Emma Wilson",
-      email: "emma@example.com",
-      phone: "+91 98765 43212",
-      age: 28,
-      gender: "Female",
-      bloodGroup: "AB-",
-      location: {
-        type: "Point",
-        coordinates: [72.8377, 19.0560]
-      },
-      city: "Mumbai",
-      state: "Maharashtra",
-      district: "Mumbai Central",
-      country: "India",
-      hospital: "Memorial Healthcare",
-      createdAt: "2024-03-16T10:30:00Z"
-    },
-    {
-      id: 3,
-      name: "David Lee",
-      email: "david@example.com",
-      phone: "+91 98765 43213",
-      age: 52,
-      gender: "Male",
-      bloodGroup: "O+",
-      location: {
-        type: "Point",
-        coordinates: [72.8577, 19.0160]
-      },
-      city: "Mumbai",
-      state: "Maharashtra",
-      district: "Andheri",
-      country: "India",
-      hospital: "St. Mary's Hospital",
-      createdAt: "2024-03-17T09:30:00Z"
-    }
-  ];
+  useEffect(() => {
+    // Fetch donors from the backend
+    const fetchDonors = async () => {
+      try {
+        console.log('Fetching donors...');
+        const response = await axios.get('http://localhost:3000/api/donor/donors');
+        console.log('Donors fetched:', response.data.donors);
+        setDonorResponses(response.data.donors || []);
+      } catch (error) {
+        console.error('Error fetching donors:', error);
+      }
+    };
+
+    // Fetch receivers from the backend
+    const fetchReceivers = async () => {
+      try {
+        console.log('Fetching receivers...');
+        const response = await axios.get('http://localhost:3000/api/receiver');
+        console.log('Receivers fetched:', response.data.receivers);
+        setReceiverRequests(response.data.receivers || []);
+      } catch (error) {
+        console.error('Error fetching receivers:', error);
+      }
+    };
+
+    fetchDonors();
+    fetchReceivers();
+  }, []);
 
   // Filter functions
   const filterDonors = (donors) => {
@@ -284,7 +209,7 @@ function Home() {
               {/* Donor Cards */}
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                 {filterDonors(donorResponses).map(donor => (
-                  <div key={donor.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-purple-100">
+                  <div key={donor._id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-purple-100">
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-semibold text-gray-800 text-lg">{donor.name}</h3>
@@ -304,6 +229,12 @@ function Home() {
                             {donor.gender}
                           </span>
                         </div>
+                        <div className="flex items-center gap-4 mt-3 text-sm text-gray-600">
+                          <span className="flex items-center gap-1">
+                            <FaPhoneAlt className="text-purple-400" />
+                            Phone: {donor.phone}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <div className="bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-medium">
@@ -315,7 +246,7 @@ function Home() {
                       </div>
                     </div>
                     
-                    {expandedDonor === donor.id && (
+                    {expandedDonor === donor._id && (
                       <div className="mt-4 pt-4 border-t border-gray-100 animate-fadeIn">
                         <h4 className="font-semibold text-gray-800 mb-2">Contact Information</h4>
                         <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
@@ -333,12 +264,12 @@ function Home() {
                     
                     <div className="mt-4 flex items-center justify-between">
                       <button 
-                        onClick={() => setExpandedDonor(expandedDonor === donor.id ? null : donor.id)}
+                        onClick={() => setExpandedDonor(expandedDonor === donor._id ? null : donor._id)}
                         className="text-purple-600 text-sm font-medium flex items-center gap-2 hover:text-purple-700"
                       >
-                        {expandedDonor === donor.id ? 'Show Less' : 'View Details'}
+                        {expandedDonor === donor._id ? 'Show Less' : 'View Details'}
                         <FaArrowRight className={`transition-transform ${
-                          expandedDonor === donor.id ? 'rotate-90' : ''
+                          expandedDonor === donor._id ? 'rotate-90' : ''
                         }`} />
                       </button>
                       <button className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors flex items-center gap-2">
@@ -368,7 +299,7 @@ function Home() {
               {/* Request Cards */}
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                 {filterRequests(receiverRequests).map(request => (
-                  <div key={request.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-purple-100">
+                  <div key={request._id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-purple-100">
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-semibold text-gray-800 text-lg">{request.name}</h3>
@@ -391,11 +322,17 @@ function Home() {
                           <div className="text-sm text-gray-600">
                             Posted: {new Date(request.createdAt).toLocaleDateString()}
                           </div>
+                          <div className="flex items-center gap-4 mt-3 text-sm text-gray-600">
+                            <span className="flex items-center gap-1">
+                              <FaPhoneAlt className="text-purple-400" />
+                              Phone: {request.phone}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                     
-                    {expandedRequest === request.id && (
+                    {expandedRequest === request._id && (
                       <div className="mt-4 pt-4 border-t border-gray-100 animate-fadeIn">
                         <h4 className="font-semibold text-gray-800 mb-2">Contact Information</h4>
                         <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
@@ -472,4 +409,4 @@ function Home() {
   );
 }
 
-export default Home; 
+export default Home;
