@@ -5,7 +5,6 @@ import {
   FaFilter, FaMapMarkerAlt, FaClock, FaHospital, FaPhoneAlt,
   FaCalendarAlt, FaBell, FaArrowRight
 } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
 
 function Home() {
 

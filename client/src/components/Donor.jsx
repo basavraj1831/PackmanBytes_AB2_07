@@ -1,38 +1,116 @@
-import { useState } from 'react';
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTint, FaCalendar, FaHeartbeat, FaClipboardList } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTint, FaCalendar, FaHeartbeat } from 'react-icons/fa';
 
-function Donor() {
+const DonorRegistration = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    pincode: '',
-    bloodGroup: '',
-    dateOfBirth: '',
-    lastDonation: '',
-    medicalConditions: '',
-    weight: '',
-    gender: ''
+    name: "",
+    email: "",
+    phone: "",
+    age: "",
+    gender: "",
+    bloodGroup: "",
   });
+  const [location, setLocation] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 2000,
+    };
+
+    const success = async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      setLocation({ latitude, longitude });
+
+      // Fetch address
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+        const { data } = await axios.get(url);
+
+        if (data.address) {
+          setAddress({
+            city: data.address.city || data.address.town || data.address.village || "Unknown",
+            district: data.address.county || "Unknown",
+            state: data.address.state || "Unknown",
+            country: data.address.country || "Unknown",
+          });
+        } else {
+          setError("Could not fetch address.");
+        }
+      } catch (err) {
+        setError("Failed to fetch location data.");
+      }
+    };
+
+    const geoError = (err) => {
+      setError(err.code === 1 ? "Please allow location access." : "Cannot get current location.");
+    };
+
+    const watcher = navigator.geolocation.watchPosition(success, geoError, options);
+    return () => navigator.geolocation.clearWatch(watcher);
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add your form submission logic here
+    if (!formData.name || !formData.email || !formData.phone || !formData.age || !formData.gender || !formData.bloodGroup) {
+      setError("Please fill all fields.");
+      return;
+    }
+
+    if (!location || !address) {
+      setError("Cannot send data. Location not available.");
+      return;
+    }
+
+    const donorData = {
+      ...formData,
+      age: Number(formData.age),
+      location: {
+        type: "Point",
+        coordinates: [location.longitude, location.latitude],
+      },
+      city: address.city,
+      district: address.district,
+      state: address.state,
+      country: address.country,
+      available: true,
+    };
+
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:3000/api/donor/add-donor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(donorData),
+      });
+
+      const data = await response.json();
+      setLoading(false);
+
+      if (data.success) {
+        alert("Donor added successfully!");
+        setFormData({ name: "", email: "", phone: "", age: "", gender: "", bloodGroup: "" });
+      } else {
+        setError(data.message || "Failed to send data.");
+      }
+    } catch (err) {
+      setLoading(false);
+      setError("Error sending data to the server.");
+    }
   };
 
   return (
@@ -61,22 +139,11 @@ function Donor() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-xl">
                   <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
                     <input
                       type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
-                      required
-                    />
-                  </div>
-                  <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
+                      name="name"
+                      value={formData.name}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
                       required
@@ -92,17 +159,17 @@ function Donor() {
                       required
                     >
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
                   <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Date of Birth</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Age</label>
                     <input
-                      type="date"
-                      name="dateOfBirth"
-                      value={formData.dateOfBirth}
+                      type="number"
+                      name="age"
+                      value={formData.age}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
                       required
@@ -151,24 +218,24 @@ function Donor() {
                 </div>
                 <div className="bg-gray-50 p-6 rounded-xl space-y-6">
                   <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Street Address</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
                     <input
                       type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleChange}
+                      name="city"
+                      value={address?.city ?? "Fetching..."}
+                      readOnly
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
                       required
                     />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">District</label>
                       <input
                         type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleChange}
+                        name="district"
+                        value={address?.district ?? "Fetching..."}
+                        readOnly
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
                         required
                       />
@@ -178,19 +245,19 @@ function Donor() {
                       <input
                         type="text"
                         name="state"
-                        value={formData.state}
-                        onChange={handleChange}
+                        value={address?.state ?? "Fetching..."}
+                        readOnly
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
                         required
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">PIN Code</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Country</label>
                       <input
                         type="text"
-                        name="pincode"
-                        value={formData.pincode}
-                        onChange={handleChange}
+                        name="country"
+                        value={address?.country ?? "Fetching..."}
+                        readOnly
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
                         required
                       />
@@ -216,42 +283,10 @@ function Donor() {
                       required
                     >
                       <option value="">Select Blood Group</option>
-                      {bloodGroups.map(group => (
+                      {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(group => (
                         <option key={group} value={group}>{group}</option>
                       ))}
                     </select>
-                  </div>
-                  <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Weight (kg)</label>
-                    <input
-                      type="number"
-                      name="weight"
-                      value={formData.weight}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
-                      required
-                    />
-                  </div>
-                  <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Last Donation Date</label>
-                    <input
-                      type="date"
-                      name="lastDonation"
-                      value={formData.lastDonation}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
-                    />
-                  </div>
-                  <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Medical Conditions</label>
-                    <textarea
-                      name="medicalConditions"
-                      value={formData.medicalConditions}
-                      onChange={handleChange}
-                      rows="3"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
-                      placeholder="List any medical conditions..."
-                    />
                   </div>
                 </div>
               </div>
@@ -291,6 +326,6 @@ function Donor() {
       </div>
     </div>
   );
-}
+};
 
-export default Donor; 
+export default DonorRegistration;

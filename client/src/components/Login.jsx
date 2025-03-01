@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { FaEnvelope, FaLock, FaArrowRight } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify'
+import { signInWithPopup } from 'firebase/auth'
+import { auth, provider } from '../helpers/firebase'
 import { getEnv } from '../helpers/getEnv';
 import { useDispatch } from "react-redux";
 import { setUser } from '../redux/user/userSlice';
@@ -30,6 +32,36 @@ function Login() {
     localStorage.setItem("resetPasswordVerificationRequired", "true");
     navigate('/forgot-password');
   };
+
+  const handleLogin = async () => {
+    try {
+        const googleResponse = await signInWithPopup(auth, provider)
+
+        const user = googleResponse.user
+        const bodyData = {
+            name: user.displayName,
+            email: user.email,
+        }
+        const response = await fetch(`http://localhost:3000/api/auth/google-login`,{
+        method: 'post',
+        headers: { 'Content-type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(bodyData)
+        }) 
+
+        const data = await response.json();
+
+        if(!response.ok){
+           return toast.error(data.message)
+        }
+        dispatch(setUser(data.user))
+        navigate('/')
+        toast.success(data.message)
+
+    } catch (error) {
+        toast.error(error.message)
+    }
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,7 +115,7 @@ function Login() {
           {/* Social Login Buttons */}
           <button 
             className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors mb-8"
-            onClick={() => {/* Add Google Sign In Logic */}}
+            onClick={handleLogin}
           >
             <img 
               src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 

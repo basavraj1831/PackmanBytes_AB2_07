@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaTint, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhone, FaCalendarAlt, FaVenusMars, FaHospital, FaCity, FaGlobe, FaArrowRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function RequestBlood() {
   const [formData, setFormData] = useState({
@@ -16,8 +18,55 @@ function RequestBlood() {
     country: '',
   });
 
+  const [location, setLocation] = useState(null);
+  const [address, setAddress] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setSubmitStatus({ type: 'error', message: 'Geolocation is not supported by your browser.' });
+      return;
+    }
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 2000,
+    };
+
+    const success = async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      setLocation({ latitude, longitude });
+
+      // Fetch address
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+        const { data } = await axios.get(url);
+
+        if (data.address) {
+          setAddress({
+            city: data.address.city || data.address.town || data.address.village || 'Unknown',
+            district: data.address.county || 'Unknown',
+            state: data.address.state || 'Unknown',
+            country: data.address.country || 'Unknown',
+          });
+        } else {
+          setSubmitStatus({ type: 'error', message: 'Could not fetch address.' });
+        }
+      } catch (err) {
+        setSubmitStatus({ type: 'error', message: 'Failed to fetch location data.' });
+      }
+    };
+
+    const geoError = (err) => {
+      setSubmitStatus({ type: 'error', message: err.code === 1 ? 'Please allow location access.' : 'Cannot get current location.' });
+    };
+
+    const watcher = navigator.geolocation.watchPosition(success, geoError, options);
+    return () => navigator.geolocation.clearWatch(watcher);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,36 +81,39 @@ function RequestBlood() {
     setIsSubmitting(true);
     setSubmitStatus({ type: '', message: '' });
 
+    if (!location || !address) {
+      setSubmitStatus({ type: 'error', message: 'Cannot send data. Location not available.' });
+      setIsSubmitting(false);
+      return;
+    }
+
+    const requestData = {
+      ...formData,
+      location: {
+        type: 'Point',
+        coordinates: [location.longitude, location.latitude],
+      },
+      city: address.city,
+      district: address.district,
+      state: address.state,
+      country: address.country,
+    };
+
     try {
-      // Add your API call here
-      const response = await fetch('/api/request-blood', {
+      const response = await fetch('http://localhost:3000/api/receiver/add-receiver', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestData),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        setSubmitStatus({
-          type: 'success',
-          message: 'Blood request submitted successfully! We will contact you soon.'
-        });
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          age: '',
-          gender: '',
-          bloodGroup: '',
-          hospital: '',
-          city: '',
-          district: '',
-          state: '',
-          country: '',
-        });
+        navigate('/near', { state: { donors: data.donors } });
       } else {
-        throw new Error('Failed to submit request');
+        throw new Error(data.message || 'Failed to submit request');
       }
     } catch (error) {
       setSubmitStatus({
@@ -75,7 +127,7 @@ function RequestBlood() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 pt-20">
-      {/* Hero Section - Updated to red theme */}
+      {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-600 to-red-500 py-20 px-4">
         <div className="container mx-auto max-w-4xl text-center text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Request Blood</h1>
@@ -108,12 +160,12 @@ function RequestBlood() {
         </div>
       </div>
 
-      {/* Form Section - Updated colors */}
+      {/* Form Section */}
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 -mt-20 relative z-10 border border-gray-100">
             <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Personal Information - Updated icon colors */}
+              {/* Personal Information */}
               <div>
                 <div className="flex items-center gap-2 mb-6">
                   <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
@@ -229,7 +281,7 @@ function RequestBlood() {
                 </div>
               </div>
 
-              {/* Location Information - Updated icon colors */}
+              {/* Location Information */}
               <div>
                 <div className="flex items-center gap-2 mb-6">
                   <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
@@ -239,21 +291,7 @@ function RequestBlood() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Hospital Name</label>
-                    <div className="relative">
-                      <FaHospital className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="text"
-                        name="hospital"
-                        value={formData.hospital}
-                        onChange={handleChange}
-                        required
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-red-200 focus:border-red-500 transition-all"
-                        placeholder="Enter hospital name"
-                      />
-                    </div>
-                  </div>
+             
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
@@ -262,9 +300,8 @@ function RequestBlood() {
                       <input
                         type="text"
                         name="city"
-                        value={formData.city}
-                        onChange={handleChange}
-                        required
+                        value={address?.city ?? 'Fetching...'}
+                        readOnly
                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-red-200 focus:border-red-500 transition-all"
                         placeholder="Enter city"
                       />
@@ -278,9 +315,8 @@ function RequestBlood() {
                       <input
                         type="text"
                         name="district"
-                        value={formData.district}
-                        onChange={handleChange}
-                        required
+                        value={address?.district ?? 'Fetching...'}
+                        readOnly
                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-red-200 focus:border-red-500 transition-all"
                         placeholder="Enter district"
                       />
@@ -294,9 +330,8 @@ function RequestBlood() {
                       <input
                         type="text"
                         name="state"
-                        value={formData.state}
-                        onChange={handleChange}
-                        required
+                        value={address?.state ?? 'Fetching...'}
+                        readOnly
                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-red-200 focus:border-red-500 transition-all"
                         placeholder="Enter state"
                       />
@@ -310,9 +345,8 @@ function RequestBlood() {
                       <input
                         type="text"
                         name="country"
-                        value={formData.country}
-                        onChange={handleChange}
-                        required
+                        value={address?.country ?? 'Fetching...'}
+                        readOnly
                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-red-200 focus:border-red-500 transition-all"
                         placeholder="Enter country"
                       />
@@ -321,7 +355,7 @@ function RequestBlood() {
                 </div>
               </div>
 
-              {/* Submit Button - Updated to red theme */}
+              {/* Submit Button */}
               <div>
                 <button
                   type="submit"
@@ -345,7 +379,7 @@ function RequestBlood() {
                 </button>
               </div>
 
-              {/* Status Message - Colors remain same for success/error states */}
+              {/* Status Message */}
               {submitStatus.message && (
                 <div className={`p-4 rounded-lg animate-fadeIn ${
                   submitStatus.type === 'success' 
@@ -360,7 +394,7 @@ function RequestBlood() {
         </div>
       </div>
 
-      {/* Additional Information - Updated icon colors */}
+      {/* Additional Information */}
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -386,4 +420,4 @@ function RequestBlood() {
   );
 }
 
-export default RequestBlood; 
+export default RequestBlood;

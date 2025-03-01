@@ -69,7 +69,7 @@ function Navbar() {
 
           {/* Desktop Account Section */}
           <div className="hidden md:flex items-center space-x-4">
-            {user && user.isLogin ? (
+            {/* {!user.isLoggedIn ? ( */}
               <button
                 onClick={() => handleAuthClick("/login")}
                 className="flex items-center gap-2 text-white hover:text-red-500 transition-colors font-medium"
@@ -77,7 +77,7 @@ function Navbar() {
                 <FaSignInAlt className="text-lg" />
                 <span>Login</span>
               </button>
-            ) : (
+            {/* ) : ( */}
               <Link
                 to="/account"
                 className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors font-medium shadow-lg"
@@ -85,7 +85,7 @@ function Navbar() {
                 <FaUser />
                 <span>Account</span>
               </Link>
-            )}
+            {/* )} */}
           </div>
         </div>
 

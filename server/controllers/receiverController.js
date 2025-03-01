@@ -102,3 +102,56 @@ export const getAllReceivers = async (req, res, next) => {
     next(handleError(500, error.message));
   }
 };
+
+export const getLatestRequest = async (req, res, next) => {
+  try {
+    const { email } = req.params;
+    console.log('Fetching latest request for email:', email); // Add this line to log the email
+    const latestRequest = await Receiver.findOne({ email }).sort({ createdAt: -1 }).exec();
+
+    if (!latestRequest) {
+      console.log('No request found for this email:', email); // Add this line to log the missing request
+      return next(handleError(404, "No request found for this email."));
+    }
+
+    const { location } = latestRequest;
+    const [longitude, latitude] = location.coordinates;
+    console.log('Latest request location:', { longitude, latitude }); // Add this line to log the location
+
+    const donors = await Donor.find({
+      location: {
+        $near: {
+          $geometry: { type: "Point", coordinates: [longitude, latitude] },
+          $maxDistance: 5000,
+        },
+      },
+      available: true,
+    }).select('name bloodGroup phone city state');
+
+    console.log('Found donors:', donors); // Add this line to log the found donors
+
+    res.status(200).json({
+      success: true,
+      message: "Donors found successfully",
+      donors,
+    });
+  } catch (error) {
+    console.error('Error fetching latest request:', error);
+    next(handleError(500, error.message));
+  }
+};
+
+
+
+
+
+
+// const donors = await Donor.find({
+//   location: {
+//     $near: {
+//       $geometry: { type: "Point", coordinates: [longitude, latitude] },
+//       $maxDistance: 5000,
+//     },
+//   },
+//   available: true,
+// });

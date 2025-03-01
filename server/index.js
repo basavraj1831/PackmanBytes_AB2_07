@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import DonorRoute from './routes/donorRoute.js';
 import receiverRoutes from './routes/receiver.js';
 import AuthRoute from './routes/authRoute.js';
+import UserRoute from './routes/userRoute.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(cors({
 }));
 
 app.use('/api/auth', AuthRoute);
+app.use('/api/user', UserRoute)
 app.use('/api/receiver', receiverRoutes);
 app.use('/api/donor', DonorRoute);
 
