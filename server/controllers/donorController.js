@@ -6,11 +6,14 @@ import { DONOR_REQUEST_COMPLETE_TEMPLATE, REGISTER_COMPLETE_TEMPLATE } from "../
 
 export const getDonors = async (req, res, next) => {
   try {
+    console.log('Fetching all donors...');
     const donors = await Donor.find();
+    console.log('Donors fetched:', donors);
     res.status(200).json({
       donors,
     });
   } catch (error) {
+    console.error('Error fetching donors:', error);
     next(handleError(500, error.message));
   }
 };

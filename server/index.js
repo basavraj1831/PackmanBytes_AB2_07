@@ -20,28 +20,30 @@ app.use(cors({
     credentials: true,
 }));
 
-
 app.use('/api/auth', AuthRoute);
 app.use('/api/receiver', receiverRoutes);
 app.use('/api/donor', DonorRoute);
 
-
-mongoose.connect(process.env.MONGODB_CONN, {dbName: 'blood-donation'}).then(() => {
-    console.log('Connected to MongoDB');
-}).catch((err) => {
-    console.log('Database connection failed',err);
+mongoose.connect(process.env.MONGODB_CONN, {
+  dbName: 'blood-donation',
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
+.then(() => {
+  console.log('Connected to MongoDB');
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+})
+.catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
 });
 
-app.use((err, req, res, next ) => {
-   const statusCode = err.statusCode || 500;
-   const message = err.message || 'Internal server error.';
-   res.status(statusCode).json({
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(err.statusCode || 500).json({
     success: false,
-    statusCode,
-    message
-   });
+    statusCode: err.statusCode || 500,
+    message: err.message || 'Internal server error.',
+  });
 });

@@ -5,17 +5,15 @@ import Donor from "../models/donorModel.js";
 
 export const addReceiver = async (req, res, next) => {
   try {
-    // Extract data from request body
-    const { name, email, phone, age, gender, bloodGroup, location } = req.body;
+    console.log('Adding receiver:', req.body);
+    const { name, email, phone, age, gender, bloodGroup, location, city, state, country, district } = req.body;
 
-    // Validate location data
     if (!location || !location.coordinates || location.coordinates.length !== 2) {
       return next(handleError(400, "Invalid location data. Latitude and Longitude are required."));
     }
 
-    const [latitude, longitude] = location.coordinates; // Extract lat & long
+    const [latitude, longitude] = location.coordinates;
 
-    // Save receiver in the correct format
     const receiver = new Receiver({
       name,
       email,
@@ -25,8 +23,12 @@ export const addReceiver = async (req, res, next) => {
       bloodGroup,
       location: {
         type: "Point",
-        coordinates: [longitude, latitude], // MongoDB requires [longitude, latitude]
+        coordinates: [longitude, latitude],
       },
+      city,
+      state,
+      country,
+      district,
     });
 
     await receiver.save();
@@ -35,7 +37,7 @@ export const addReceiver = async (req, res, next) => {
       location: {
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: 5000, 
+          $maxDistance: 5000,
         },
       },
       available: true,
@@ -47,15 +49,14 @@ export const addReceiver = async (req, res, next) => {
       donors,
     });
 
-    // Send emails asynchronously
     sendEmailToDonors(donors);
 
   } catch (error) {
+    console.error('Error adding receiver:', error);
     next(handleError(500, error.message));
   }
 };
 
-// Function to send emails asynchronously
 const sendEmailToDonors = async (donors) => {
   try {
     if (donors.length === 0) return;
@@ -83,5 +84,21 @@ const sendEmailToDonors = async (donors) => {
     console.log("Emails sent successfully to donors.");
   } catch (error) {
     console.error("Error sending emails:", error);
+  }
+};
+
+export const getAllReceivers = async (req, res, next) => {
+  try {
+    console.log('Fetching all receivers...');
+    const receivers = await Receiver.find();
+    console.log('Receivers fetched:', receivers);
+    res.status(200).json({
+      success: true,
+      count: receivers.length,
+      receivers,
+    });
+  } catch (error) {
+    console.error('Error fetching receivers:', error);
+    next(handleError(500, error.message));
   }
 };
