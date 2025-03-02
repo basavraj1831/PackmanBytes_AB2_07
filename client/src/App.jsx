@@ -12,6 +12,7 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import EmailVerify from './components/EmailVerify'
 import ResetPassword from './components/ResetPassword'
+import Chatbot from './components/Chatbot'
 import DonorsNearby from './components/DonorsNearby'
 import Profile from './components/Profile'
 import DonorList from './components/Donorlist'
@@ -61,6 +62,9 @@ function App() {
           <Route path="/register" element={<Signup />} />
         </Routes>
       )}
+
+      {/* Add Chatbot */}
+      <Chatbot />
     </div>
   )
 }

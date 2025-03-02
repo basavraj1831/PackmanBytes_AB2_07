@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import DonorRoute from './routes/donorRoute.js';
 import receiverRoutes from './routes/receiver.js';
 import AuthRoute from './routes/authRoute.js';
+import chatRoute from './routes/chatRoute.js';
 import UserRoute from './routes/userRoute.js';
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.use('/api/auth', AuthRoute);
 app.use('/api/user', UserRoute)
 app.use('/api/receiver', receiverRoutes);
 app.use('/api/donor', DonorRoute);
+app.use('/api/chat', chatRoute);
 
 mongoose.connect(process.env.MONGODB_CONN, {
   dbName: 'blood-donation',
