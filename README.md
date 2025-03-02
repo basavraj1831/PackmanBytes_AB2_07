@@ -21,7 +21,13 @@ Life Link is a web-based **blood donation & emergency assistance platform** that
 - **Chatbot:** NLP-based user interaction system 
 ## Screenshots
 
-![App Screenshot](https://in.images.search.yahoo.com/images/view;_ylt=AwrKBJTs2cNnUl0i62C9HAx.;_ylu=c2VjA3NyBHNsawNpbWcEb2lkAzg2MjkyNDM4MjdhYTY5MjNjYzk3M2U2MWZmOGRhNTk4BGdwb3MDOARpdANiaW5n?back=https%3A%2F%2Fin.images.search.yahoo.com%2Fsearch%2Fimages%3Fp%3Dlive%2Bimage%2Burl%26type%3DE210IN885G0%26fr%3Dmcafee%26fr2%3Dpiv-web%26tab%3Dorganic%26ri%3D8&w=1280&h=720&imgurl=i.ytimg.com%2Fvi%2FwWzf3ByyPsY%2Fmaxresdefault.jpg&rurl=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DwWzf3ByyPsY&size=95KB&p=live+image+url&oid=8629243827aa6923cc973e61ff8da598&fr2=piv-web&fr=mcafee&tt=How+to+Get+YouTube+Streaming+URL+for+Live+Streaming%3F+-+YouTube&b=0&ni=21&no=8&ts=&tab=organic&sigr=74K62uq9O4i5&sigb=4ylrN8zpKcUR&sigi=6JE8z1kxs5T9&sigt=0H2uaaomvz.R&.crumb=7OSW0sK6KyR&fr=mcafee&fr2=piv-web&type=E210IN885G0)
+![Image](https://github.com/user-attachments/assets/4d305e29-3b01-446d-8a7c-cdfad32175db)
+![Image](https://github.com/user-attachments/assets/1b3da4d7-d0d9-4253-aebc-b5c19fe78d74)
+![Image](https://github.com/user-attachments/assets/4bb94a03-2c62-4f5f-b2c3-a6e79928dc15)
+![Image](https://github.com/user-attachments/assets/f4df8d3e-79b8-46f5-847d-9705a5da15ec)
+![Image](https://github.com/user-attachments/assets/8851560b-8bba-4fd6-aa68-0ab0a1297964)
+![Image](https://github.com/user-attachments/assets/7d7c991b-bd57-4fa6-90bf-c4f8de10886d)
+![Image](https://github.com/user-attachments/assets/7a5fb239-7ed7-42e6-a8ef-d04f75fb50ef)
 
 
 ## Used By
