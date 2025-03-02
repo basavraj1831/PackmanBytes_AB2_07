@@ -15,6 +15,7 @@ import ResetPassword from './components/ResetPassword'
 import DonorsNearby from './components/DonorsNearby'
 import Profile from './components/Profile'
 import DonorList from './components/Donorlist'
+import Update from './components/Update'
 
 
 function App() {
@@ -50,6 +51,8 @@ function App() {
         <Route path="/near" element={<DonorsNearby/>} />
         <Route path='/profile' element={<Profile/>}/>
         <Route path="/receiver" element={<DonorList/>} />
+        <Route path="/update" element={<Update/>} />
+
       </Routes>
 
       {/* Show auth modals when we have a background location */}

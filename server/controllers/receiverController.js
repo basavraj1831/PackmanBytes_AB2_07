@@ -14,6 +14,9 @@ export const addReceiver = async (req, res, next) => {
 
     const [longitude,latitude] = location.coordinates;
 
+    console.log('Longitude:', longitude);
+
+
     const receiver = new Receiver({
       name,
       email,
@@ -43,13 +46,37 @@ export const addReceiver = async (req, res, next) => {
       available: true,
     });
 
+    console.log('Donors:', donors);
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp-relay.brevo.com",
+      port: 587,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    await Promise.all(donors.map(async (donor) => {
+      let acceptLink = ``;
+      let mailOptions = {
+        from: process.env.SENDER_EMAIL,
+        to: donor.email,
+        subject: "Urgent Blood receiver",
+        html: `<p>A patient needs blood urgently.</p>
+               <p>Click below if you can donate:</p>
+               <a href="${acceptLink}" style="padding: 10px; background-color: green; color: white; text-decoration: none;">Accept</a>`
+      };
+      return transporter.sendMail(mailOptions);
+    }));
+    
+
     res.status(200).json({
       success: true,
       message: "Receiver added successfully",
       donors,
     });
 
-    sendEmailToDonors(donors);
 
   } catch (error) {
     console.error('Error adding receiver:', error);
@@ -75,8 +102,8 @@ const sendEmailToDonors = async (donors) => {
         transporter.sendMail({
           from: process.env.SENDER_EMAIL,
           to: donor.email,
-          subject: "Urgent Blood Request",
-          html: "<p>A receiver near your location is requesting blood. Please respond if available.</p>",
+          subject: "Urgent Blood receiver",
+          html: "<p>A receiver near your location is receivering blood. Please respond if available.</p>",
         })
       )
     );
@@ -103,22 +130,25 @@ export const getAllReceivers = async (req, res, next) => {
   }
 };
 
-export const getLatestRequest = async (req, res, next) => {
+export const getLatestreceiver = async (req, res, next) => {
   try {
     const { email } = req.params;
-    console.log('Fetching latest request for email:', email); // Add this line to log the email
-    const latestRequest = await Receiver.findOne({ email }).sort({ createdAt: -1 }).exec();
+    console.log("Fetching latest receiver for email:", email);
 
-    if (!latestRequest) {
-      console.log('No request found for this email:', email); // Add this line to log the missing request
-      return next(handleError(404, "No request found for this email."));
+    const latestreceiver = await Receiver.findOne({ email })
+      .sort({ createdAt: -1 })
+      .exec();
+
+    if (!latestreceiver) {
+      console.log("No receiver found for this email:", email);
+      return next(handleError(404, "No receiver found for this email."));
     }
 
-    const { location } = latestRequest;
+    const { location, bloodGroup } = latestreceiver;
     const [longitude, latitude] = location.coordinates;
-    console.log('Latest request location:', { longitude, latitude }); // Add this line to log the location
+    console.log("Latest receiver location:", { longitude, latitude });
 
-    const donors = await Donor.find({
+    let donors = await Donor.find({
       location: {
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
@@ -126,9 +156,15 @@ export const getLatestRequest = async (req, res, next) => {
         },
       },
       available: true,
-    }).select('name bloodGroup phone city state');
+      bloodGroup: bloodGroup,
+    }).select("name bloodGroup phone city state");
 
-    console.log('Found donors:', donors); // Add this line to log the found donors
+    console.log("Found donors before sorting:", donors);
+
+    // Sort donors: Priority to same blood group
+    donors = donors.sort((a, b) => (a.bloodGroup === bloodGroup ? -1 : 1));
+
+    console.log("Sorted donors:", donors);
 
     res.status(200).json({
       success: true,
@@ -136,8 +172,28 @@ export const getLatestRequest = async (req, res, next) => {
       donors,
     });
   } catch (error) {
-    console.error('Error fetching latest request:', error);
+    console.error("Error fetching latest receiver:", error);
     next(handleError(500, error.message));
+  }
+};
+
+export const acceptLink =  async (req, res, next) => {
+  const { receiverId, donorId } = req.params;
+
+  try {
+    let receiver = await Receiver.findById(receiverId);
+    if (!receiver) return res.status(404).send("receiver not found");
+
+    // Add donor ID if not already added
+    if (!receiver.donorsAccepted.includes(donorId)) {
+      receiver.donorsAccepted.push(donorId);
+      receiver.status = 'Completed';
+      await receiver.save();
+    }
+
+    res.send("<h1>Thank you! Your donation has been recorded.</h1>");
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
   }
 };
 

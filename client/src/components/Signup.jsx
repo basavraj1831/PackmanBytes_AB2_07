@@ -2,9 +2,14 @@ import { useState } from 'react';
 import { FaEnvelope, FaLock, FaArrowRight, FaUser, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { signInWithPopup } from 'firebase/auth'
+import { auth, provider } from '../helpers/firebase'
+import { setUser } from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 function Signup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const isModal = location.state?.background;
   const [formData, setFormData] = useState({
@@ -49,6 +54,36 @@ function Signup() {
       setPasswordErrors(validatePassword(value));
     }
   };
+
+  const handleLogin = async () => {
+    try {
+        const googleResponse = await signInWithPopup(auth, provider)
+
+        const user = googleResponse.user
+        const bodyData = {
+            name: user.displayName,
+            email: user.email,
+        }
+        const response = await fetch(`http://localhost:3000/api/auth/google-login`,{
+        method: 'post',
+        headers: { 'Content-type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(bodyData)
+        }) 
+
+        const data = await response.json();
+
+        if(!response.ok){
+           return toast.error(data.message)
+        }
+        dispatch(setUser(data.user))
+        navigate('/')
+        toast.success(data.message)
+
+    } catch (error) {
+        toast.error(error.message)
+    }
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,7 +144,7 @@ function Signup() {
           {/* Google Signup Button */}
           <button 
             className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors mb-8"
-            onClick={() => {/* Add Google Sign Up Logic */}}
+            onClick={handleLogin}
           >
             <img 
               src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 

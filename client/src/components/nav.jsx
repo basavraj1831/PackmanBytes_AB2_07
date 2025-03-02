@@ -1,31 +1,61 @@
-import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { FaUser, FaSignInAlt, FaBars, FaTimes, FaSignOutAlt, FaCaretDown, FaTint, FaHandHoldingHeart } from 'react-icons/fa'
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  FaUser,
+  FaSignInAlt,
+  FaBars,
+  FaTimes,
+  FaSignOutAlt,
+  FaCaretDown,
+  FaTint,
+  FaHandHoldingHeart,
+} from "react-icons/fa";
 
-import myLogo from '../assets/logo.png'
+import myLogo from "../assets/logo.png";
+import { toast } from "react-toastify";
+import { removeUser } from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
-  const location = useLocation()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  console.log(user?.isLoggedIn);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleAuthClick = (path) => {
     navigate(path, {
-      state: { background: location }
-    })
-    setIsMenuOpen(false)
-  }
+      state: { background: location },
+    });
+    setIsMenuOpen(false);
+  };
 
-  const handleLogout = () => {
-    // Add logout logic here
-    navigate('/')
-    setIsProfileDropdownOpen(false)
-  }
+  const handleLogout = async () => {
+    setIsProfileDropdownOpen(!isProfileDropdownOpen)
+    try {
+      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+        method: "get",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return toast.error(data.message);
+      }
+      dispatch(removeUser());
+      navigate("/");
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   const handleProfileAction = (action) => {
-    if (action === 'receiver') {
-      navigate('/near', { state: { activeTab: 'donorList' } });
+    if (action === "receiver") {
+      navigate("/near", { state: { activeTab: "donorList" } });
     } else {
       navigate(action);
     }
@@ -37,22 +67,25 @@ function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="text-red-500 text-xl sm:text-2xl font-bold flex items-center gap-2 p-2">
-            <img 
+          <Link
+            to="/"
+            className="text-red-500 text-xl sm:text-2xl font-bold flex items-center gap-2 p-2"
+          >
+            <img
               src={myLogo}
-              alt="Blood Donation Logo" 
-              style={{ 
-                height: '70px', 
-                width: 'auto',
-                padding: '4px',
-                filter: 'brightness(1.1)' // Makes the image slightly brighter
-              }} 
+              alt="Blood Donation Logo"
+              style={{
+                height: "70px",
+                width: "auto",
+                padding: "4px",
+                filter: "brightness(1.1)", // Makes the image slightly brighter
+              }}
               className="hover:scale-105 transition-transform duration-200"
             />
           </Link>
 
           {/* Mobile menu button */}
-          <button 
+          <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-white hover:text-red-500 transition-colors"
           >
@@ -62,16 +95,28 @@ function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center justify-center flex-1 px-4">
             <div className="flex space-x-8">
-              <Link to="/home" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              <Link
+                to="/home"
+                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+              >
                 Home
               </Link>
-              <Link to="/donor" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              <Link
+                to="/donor"
+                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+              >
                 Donate
               </Link>
-              <Link to="/request" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              <Link
+                to="/request"
+                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+              >
                 Request Blood
               </Link>
-              <Link to="/about" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+              <Link
+                to="/about"
+                className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+              >
                 About
               </Link>
             </div>
@@ -79,30 +124,40 @@ function Navbar() {
 
           {/* Desktop Account Section - Updated with Enhanced Dropdown */}
           <div className="hidden md:flex items-center space-x-4">
-            <button 
-              onClick={() => handleAuthClick('/login')}
-              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors font-medium"
-            >
-              <FaSignInAlt className="text-lg" />
-              <span>Login</span>
-            </button>
-            <div className="relative">
+            {!user?.isLoggedIn && (
               <button
-                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors font-medium shadow-lg"
+                onClick={() => handleAuthClick("/login")}
+                className="flex items-center gap-2 text-white hover:text-red-500 transition-colors font-medium"
               >
-                <FaUser />
-                <span>Profile</span>
-                <FaCaretDown className={`transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
+                <FaSignInAlt className="text-lg" />
+                <span>Login</span>
               </button>
+            )}
+            <div className="relative">
+              {user?.isLoggedIn && (
+                <button
+                  onClick={() =>
+                    setIsProfileDropdownOpen(!isProfileDropdownOpen)
+                  }
+                  className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors font-medium shadow-lg"
+                >
+                  <FaUser />
+                  <span>Profile</span>
+                  <FaCaretDown
+                    className={`transition-transform duration-200 ${
+                      isProfileDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              )}
+              
 
-              {/* Enhanced Profile Dropdown */}
               {isProfileDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                   <Link
                     to="/profile"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
-                    onClick={() => handleProfileAction('/profile')}
+                    onClick={() => handleProfileAction("/profile")}
                   >
                     <FaUser className="text-sm" />
                     <span>View Profile</span>
@@ -110,13 +165,13 @@ function Navbar() {
                   <Link
                     to="/donor"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
-                    onClick={() => handleProfileAction('/donor')}
+                    onClick={() => handleProfileAction("/donor")}
                   >
                     <FaTint className="text-sm" />
                     <span>Donor</span>
                   </Link>
                   <button
-                  onClick={() => handleProfileAction('/near')}
+                    onClick={() => handleProfileAction("/near")}
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
                   >
                     <FaHandHoldingHeart className="text-sm" />
@@ -137,18 +192,34 @@ function Navbar() {
         </div>
 
         {/* Mobile Navigation - Updated with Enhanced Options */}
-        <div className={`md:hidden transition-all duration-300 ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+        <div
+          className={`md:hidden transition-all duration-300 ${
+            isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          } overflow-hidden`}
+        >
           <div className="flex flex-col gap-2 py-4">
-            <Link to="/home" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+            <Link
+              to="/home"
+              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+            >
               Home
             </Link>
-            <Link to="/donor" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+            <Link
+              to="/donor"
+              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+            >
               Donate
             </Link>
-            <Link to="/request" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+            <Link
+              to="/request"
+              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+            >
               Request Blood
             </Link>
-            <Link to="/about" className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium">
+            <Link
+              to="/about"
+              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
+            >
               About
             </Link>
             <Link
@@ -168,7 +239,7 @@ function Navbar() {
               <span>Donor</span>
             </Link>
             <Link
-              to="/request"
+              to="/near"
               className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
@@ -187,7 +258,7 @@ function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

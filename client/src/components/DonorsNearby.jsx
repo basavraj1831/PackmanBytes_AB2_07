@@ -75,6 +75,8 @@ function DonorsNearby() {
                     <div className="mt-4 flex items-center gap-4">
                       <FaPhoneAlt className="text-gray-400" />
                       <p className="text-gray-600">{donor.phone}</p>
+                      {console.log(donor?.status)}
+                      <p className="text-gray-600">{donor.status === 'Available' ? 'Not Available' : ' Available'}</p>
                     </div>
                   </div>
                 ))}

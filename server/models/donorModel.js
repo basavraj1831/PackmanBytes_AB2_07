@@ -28,7 +28,11 @@ const donorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    available: { type: Boolean, default: true },
+    status: {
+      type: String,
+      enum: ["Available", "Not Available"],
+      default: "Available",
+    },
   },
   { timestamps: true }
 );
