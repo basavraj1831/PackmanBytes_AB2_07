@@ -56,7 +56,10 @@ function Navbar() {
   const handleProfileAction = (action) => {
     if (action === "receiver") {
       navigate("/near", { state: { activeTab: "donorList" } });
-    } else {
+    } else if (action === "update") {
+      navigate("/update", { state: { activeTab: "receiverList" } });
+    }
+    else {
       navigate(action);
     }
     setIsProfileDropdownOpen(false);
@@ -163,13 +166,20 @@ function Navbar() {
                     <span>View Profile</span>
                   </Link>
                   <Link
-                    to="/donor"
+                    to="/update"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
-                    onClick={() => handleProfileAction("/donor")}
                   >
                     <FaTint className="text-sm" />
                     <span>Donor</span>
                   </Link>
+                  {/* <button
+                    onClick={() => handleProfileAction("/update")}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
+                  >
+                    <FaHandHoldingHeart className="text-sm" />
+                    <span>Donor</span>
+                  </button> */}
+                  
                   <button
                     onClick={() => handleProfileAction("/near")}
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"

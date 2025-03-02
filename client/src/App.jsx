@@ -52,7 +52,6 @@ function App() {
         <Route path='/profile' element={<Profile/>}/>
         <Route path="/receiver" element={<DonorList/>} />
         <Route path="/update" element={<Update/>} />
-
       </Routes>
 
       {/* Show auth modals when we have a background location */}
