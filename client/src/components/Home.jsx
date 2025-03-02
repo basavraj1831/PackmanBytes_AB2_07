@@ -336,10 +336,10 @@ function Home() {
                           expandedDonor === donor._id ? 'rotate-90' : ''
                         }`} />
                       </button>
-                      <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors flex items-center gap-2">
+                      {/* <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors flex items-center gap-2">
                         <FaPhoneAlt />
                         Contact
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}
@@ -413,14 +413,14 @@ function Home() {
                     )}
                     
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <button className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
+                      {/* <button className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
                         <FaTint />
                         Donate Now
-                      </button>
-                      <button className="bg-white text-red-600 border border-red-200 px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center justify-center gap-2">
+                      </button> */}
+                      {/* <button className="bg-white text-red-600 border border-red-200 px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center justify-center gap-2">
                         <FaPhoneAlt />
                         Contact
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}

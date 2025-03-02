@@ -49,7 +49,7 @@ function LandingPage() {
       buttonText: "Learn More"
     },
     {
-      image: "https://img.freepik.com/free-vector/flat-design-join-us-message_23-2148954904.jpg?ga=GA1.1.656503990.1740769311&semt=ais_hybrid",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkFtWSepPYXjIW86XMczleSp-Q8kZPVC_idA&s",
       title: "Join Our Mission",
       description: "Together we can make a difference",
       buttonText: "Get Involved"
@@ -68,34 +68,28 @@ function LandingPage() {
       buttonText: "Find Camps",
       buttonLink: "/camps"
     },
-    {
-      image: "https://images.unsplash.com/photo-1631815589968-fdb09a223b3e?q=80&w=1772&auto=format&fit=crop",
-      title: "Technology-Driven Healthcare",
-      description: "Leveraging modern technology to streamline blood donation and distribution processes.",
-      buttonText: "Donate Now",
-      buttonLink: "/donor"
-    }
+   
   ]
 
   const boxes = [
     {
       title: "Donate Blood",
       description: "Every drop matters. Join our life-saving mission.",
-      image: "https://img.freepik.com/free-photo/close-up-hand-blood-donation_23-2148749750.jpg?w=740&t=st=1709907245~exp=1709907845~hmac=6a8427e6a8f51d0b61d2276619db31b2d7673a47f7479cf3fad5c6cd0300a2c6",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhvMoyDTFGIY4hm_kxNnd3EMivLtj_z5KHuw&s",
       link: "/donate",
       icon: <FaHeart className="text-red-500 text-4xl mb-4" />
     },
     {
       title: "Find Blood",
       description: "Quick access to blood donors in your area.",
-      image: "https://img.freepik.com/free-photo/doctor-holding-blood-bag-donation_23-2148761698.jpg?w=740&t=st=1709907297~exp=1709907897~hmac=6b4c8a008e0663d997c3c3c6df0677208339a84684ee8fb8c3991800865936cd",
+      image: "https://www.friends2support.org/imgs/landingpage/blood_drop_search.gif",
       link: "/request",
       icon: <FaSearch className="text-red-500 text-4xl mb-4" />
     },
     {
       title: "Blood Types",
       description: "Learn about different blood types and compatibility.",
-      image: "https://img.freepik.com/free-photo/blood-donation-concept-with-blood-bag_23-2149125192.jpg?w=740&t=st=1709907334~exp=1709907934~hmac=4a6d68daa0cf1b99f7f539ce8d08d1c7e5d72e5f1d63dabf7c5f0a8d8cd0c6d7",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMsRQZEGt8w9DBSxgTU2nNSvhJh3VfHpw6xA&s",
       link: "/learn",
       icon: <FaInfoCircle className="text-red-500 text-4xl mb-4" />
     }
