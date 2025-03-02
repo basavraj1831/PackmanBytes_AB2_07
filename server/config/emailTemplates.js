@@ -94,7 +94,7 @@ table, td { color: #000000; } @media (max-width: 480px) { #u_content_image_2 .v-
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       
 <img 
-  src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1739872263/Event/Email/huhppb7e0lj6b7rfkyck.png" 
+  src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1740892665/leyj7gtjjct48mevygir.png" 
   alt="Image" 
   style="display: block; width: 100px; max-width: none; border: none;" 
   width="100" 
@@ -299,7 +299,7 @@ table, td { color: #000000; } @media (max-width: 480px) { #u_content_image_2 .v-
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       
 <img 
-  src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1739872263/Event/Email/huhppb7e0lj6b7rfkyck.png" 
+  src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1740892665/leyj7gtjjct48mevygir.png" 
   alt="Image" 
   style="display: block; width: 100px; max-width: none; border: none;" 
   width="100" 
@@ -412,7 +412,7 @@ export const REGISTER_COMPLETE_TEMPLATE = `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Eventopia</title>
+    <title>Welcome to LiveLink</title>
 </head>
 <body>
 <table style="font-family:'Lato',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
@@ -421,7 +421,7 @@ export const REGISTER_COMPLETE_TEMPLATE = `
       <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 10px 30px;font-family:'Lato',sans-serif;" align="center">
         
         <div style="background:#facc15;padding:20px;border-radius:8px 8px 0 0;text-align:center;">
-            <img src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1739870541/Event/Email/wmtmuhcbejvc8svqrpsf.png" alt="" style="width:120px;height:50px;">
+            <img src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1740892665/leyj7gtjjct48mevygir.png" alt="" style="width:120px;height:50px;">
             <h1 style="color:#ffffff;font-size:24px;font-family:'Times New Roman', Times, serif;margin-top:10px;">Welcome to Eventopia</h1>
         </div>
 
@@ -466,7 +466,7 @@ export const DONOR_REQUEST_COMPLETE_TEMPLATE = `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Eventopia</title>
+    <title>Welcome to LiveLink</title>
 </head>
 <body>
 <table style="font-family:'Lato',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
@@ -475,7 +475,7 @@ export const DONOR_REQUEST_COMPLETE_TEMPLATE = `
       <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 10px 30px;font-family:'Lato',sans-serif;" align="center">
         
         <div style="background:#facc15;padding:20px;border-radius:8px 8px 0 0;text-align:center;">
-            <img src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1739870541/Event/Email/wmtmuhcbejvc8svqrpsf.png" alt="" style="width:120px;height:50px;">
+            <img src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1740892665/leyj7gtjjct48mevygir.png" alt="" style="width:120px;height:50px;">
             <h1 style="color:#ffffff;font-size:24px;font-family:'Times New Roman', Times, serif;margin-top:10px;">Donation Request</h1>
         </div>
 
@@ -529,7 +529,7 @@ export const NEW_REQUEST_TEMPLATE = `
       <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 10px 30px;font-family:'Lato',sans-serif;" align="center">
         
         <div style="background:#facc15;padding:20px;border-radius:8px 8px 0 0;text-align:center;">
-            <img src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1739870541/Event/Email/wmtmuhcbejvc8svqrpsf.png" alt="" style="width:120px;height:50px;">
+            <img src="https://res.cloudinary.com/dwuskk4xh/image/upload/v1740892665/leyj7gtjjct48mevygir.png" alt="" style="width:120px;height:50px;">
             <h1 style="color:#ffffff;font-size:24px;font-family:'Times New Roman', Times, serif;margin-top:10px;">Explore Upcoming Event</h1>
         </div>
 
@@ -583,7 +583,7 @@ export const NEW_REQUEST_TEMPLATE = `
 
     <tr>
       <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 40px;text-align:center;">
-        <a href="https://auth-31.onrender.com/login" style="background:#007bff;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:5px;font-size:16px;font-family:'Lato',sans-serif;display:inline-block;">See Event Details</a>
+        <a href="/" style="background:#007bff;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:5px;font-size:16px;font-family:'Lato',sans-serif;display:inline-block;">See Receiver Request Details</a>
       </td>
     </tr>
 

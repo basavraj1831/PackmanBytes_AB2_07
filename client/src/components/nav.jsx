@@ -75,7 +75,7 @@ function Navbar() {
             className="text-red-500 text-xl sm:text-2xl font-bold flex items-center gap-2 p-2"
           >
             <img
-              src={myLogo}
+              src= 'https://res.cloudinary.com/dwuskk4xh/image/upload/v1740893213/nyrem7lckgx0todioodw.png'
               alt="Blood Donation Logo"
               style={{
                 height: "70px",
@@ -165,13 +165,13 @@ function Navbar() {
                     <FaUser className="text-sm" />
                     <span>View Profile</span>
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/update"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     <FaTint className="text-sm" />
                     <span>Donor</span>
-                  </Link>
+                  </Link> */}
                   {/* <button
                     onClick={() => handleProfileAction("/update")}
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
@@ -185,7 +185,7 @@ function Navbar() {
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
                   >
                     <FaHandHoldingHeart className="text-sm" />
-                    <span>Receiver</span>
+                    <span>Bank & Donors</span>
                   </button>
                   <div className="border-t border-gray-100 my-1"></div>
                   <button
