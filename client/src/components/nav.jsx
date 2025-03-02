@@ -25,7 +25,7 @@ function Navbar() {
 
   const handleProfileAction = (action) => {
     if (action === 'receiver') {
-      navigate('/profile', { state: { activeTab: 'donorList' } });
+      navigate('/near', { state: { activeTab: 'donorList' } });
     } else {
       navigate(action);
     }
@@ -116,7 +116,7 @@ function Navbar() {
                     <span>Donor</span>
                   </Link>
                   <button
-                    onClick={() => handleProfileAction('receiver')}
+                  onClick={() => handleProfileAction('/near')}
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
                   >
                     <FaHandHoldingHeart className="text-sm" />

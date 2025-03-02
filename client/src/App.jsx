@@ -14,6 +14,7 @@ import EmailVerify from './components/EmailVerify'
 import ResetPassword from './components/ResetPassword'
 import DonorsNearby from './components/DonorsNearby'
 import Profile from './components/Profile'
+import DonorList from './components/Donorlist'
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
         <Route path='/forgot-password' element={<ResetPassword/>}/>
         <Route path="/near" element={<DonorsNearby/>} />
         <Route path='/profile' element={<Profile/>}/>
+        <Route path="/receiver" element={<DonorList/>} />
       </Routes>
 
       {/* Show auth modals when we have a background location */}
