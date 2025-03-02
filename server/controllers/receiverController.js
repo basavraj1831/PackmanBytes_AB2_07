@@ -2,6 +2,7 @@ import { handleError } from "../helpers/handleError.js";
 import Receiver from "../models/receiverModel.js";
 import nodemailer from "nodemailer";
 import Donor from "../models/donorModel.js";
+import { NEW_REQUEST_TEMPLATE } from "../config/emailTemplates.js";
 
 export const addReceiver = async (req, res, next) => {
   try {
@@ -62,10 +63,8 @@ export const addReceiver = async (req, res, next) => {
       let mailOptions = {
         from: process.env.SENDER_EMAIL,
         to: donor.email,
-        subject: "Urgent Blood receiver",
-        html: `<p>A patient needs blood urgently.</p>
-               <p>Click below if you can donate:</p>
-               <a href="${acceptLink}" style="padding: 10px; background-color: green; color: white; text-decoration: none;">Accept</a>`
+        subject: "Urgent Blood notification",
+        html: NEW_REQUEST_TEMPLATE.replace("{{name}}", name).replace("{{email}}",email).replace("{{phone}}",phone).replace("{{age}}",age).replace("{{gender}}",gender).replace("{{bloodGroup}}",bloodGroup).replace("{{city}}",city).replace("{{state}}",state).replace("{{country}}",country).replace("{{district}}",district)
       };
       return transporter.sendMail(mailOptions);
     }));

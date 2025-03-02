@@ -514,7 +514,7 @@ export const DONOR_REQUEST_COMPLETE_TEMPLATE = `
 </html>
 `;
 
-export const NEW_EVENT_TEMPLATE = `
+export const NEW_REQUEST_TEMPLATE = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -542,17 +542,34 @@ export const NEW_EVENT_TEMPLATE = `
         <div style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
             <p style="font-size: 18px; line-height: 25.2px; color: #666666; font-family: Quicksand;">Dear User,</p>
             <p style="font-size: 16px; line-height: 22.4px; color: #666666; font-family: Quicksand;margin-top:20px;">
-              A new event {{title}} has been added! 🎉
+            I hope this letter finds you in good health and high spirits. We are reaching out to inform you of an urgent blood request in your area. Your generous contribution as a donor can make a significant difference in saving a life.
+            <br>
+              If you or someone you know matches the required blood group and is in good health, we kindly request you to contact the recipient at the earliest. Your selfless act can bring hope and relief to those in need.
             </p>
             <p style="font-size: 16px; line-height: 22.4px; color: #666666; font-family: Quicksand;margin-top:20px;">
-              📅 Date: {{date}}
+                name: {{name}}
               <br>
-              📍 Location: {{location}}
+                email: {{email}}
               <br>
-              🎫 Ticket Price: {{price}}
+                phone: {{phone}}
+              <br>
+                age: {{age}}
+              <br>
+                gender: {{gender}}
+              <br>
+                bloodGroup: {{bloodGroup}}
+              <br>
+                city: {{city}}
+              <br>
+                district: {{district}}
+              <br>
+                state: {{state}}
+              <br>
+                country: {{country}}
+              <br>
             </p>
             <p style="font-size: 16px; line-height: 22.4px; color: #666666; font-family: Quicksand;margin-top:20px;">
-              Join us for an amazing experience.!
+              Please come forward to donation blood and save life of one another.!
                 
             </p>
             <p style="font-size: 16px; line-height: 22.4px; color: #666666; font-family: Quicksand;margin-top:30px;">
