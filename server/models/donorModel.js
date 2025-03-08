@@ -28,6 +28,10 @@ const donorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    donateCount: {
+      type: Number,
+      default: 0,
+    },
     status: {
       type: String,
       enum: ["Available", "Not Available"],
