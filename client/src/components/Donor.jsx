@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTint, FaCalendar, FaHeartbeat } from 'react-icons/fa';
+import { useSelector } from "react-redux";
+import { useFetch } from "../hooks/useFetch";
 
 const DonorRegistration = () => {
   const [formData, setFormData] = useState({
@@ -11,10 +13,20 @@ const DonorRegistration = () => {
     gender: "",
     bloodGroup: "",
   });
+
+  const user = useSelector((state) => state.user);
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const { data: userData, loading: userLoading, error: userError } = useFetch(
+      user?.user?._id ? `http://localhost:3000/api/user/get-user/${user.user._id}` : null,
+      {
+        method: "get",
+        credentials: "include",
+      }
+    );
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -190,10 +202,10 @@ const DonorRegistration = () => {
                     <input
                       type="email"
                       name="email"
-                      value={formData.email}
+                      value={userData?.user?.email}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-transparent transition duration-200 bg-white"
-                      required
+                      required readOnly
                     />
                   </div>
                   <div className="group">
