@@ -10,7 +10,6 @@ import receiverRoutes from './routes/receiver.js';
 import AuthRoute from './routes/authRoute.js';
 import chatRoute from './routes/chatRoute.js';
 import UserRoute from './routes/userRoute.js';
-import { hospitalsRouter } from './routes/hospitals.js';
 
 dotenv.config();
 
