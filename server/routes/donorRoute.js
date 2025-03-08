@@ -2,7 +2,7 @@ import express from 'express';
 import { addDonor, deleteDonor, getDonor, getDonorByEmail, getDonors, getLeaderboardDonors, updateDonor, updateDonorLocation } from '../controllers/donorController.js';
 
 const DonorRoute = express.Router();
-
+//all donor routes
 DonorRoute.post('/add-donor', addDonor);
 DonorRoute.get('/donors', getDonors);
 DonorRoute.get('/:donorid', getDonor);
