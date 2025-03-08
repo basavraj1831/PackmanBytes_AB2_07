@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaPhoneAlt, FaTint, FaUser, FaCircle } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaTint, FaUser, FaCircle, FaEnvelope } from 'react-icons/fa';
 import { useFetch } from '../hooks/useFetch';
 import BloodBankLocator from './BloodBankLocator';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000');
 
 function DonorsNearby() {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [donors, setDonors] = useState([]);
+  const [acceptedDonors, setAcceptedDonors] = useState([]);
+  const [request, setRequest] = useState(null);
+  const [requestStatus, setRequestStatus] = useState("Pending");
+  const [donorLocations, setDonorLocations] = useState({});
   const { data: userData, loading: userLoading, error: userError } = useFetch(
     user?.user?._id ? `http://localhost:3000/api/user/get-user/${user.user._id}` : null,
     {
@@ -18,34 +27,86 @@ function DonorsNearby() {
   );
 
   useEffect(() => {
-    const fetchDonors = async () => {
+    const fetchRequestAndDonors = async () => {
       if (userData && !userLoading) {
         try {
           const email = userData?.user?.email;
-          const response = await fetch(`http://localhost:3000/api/receiver/get-latest-request/${email}`, {
+          const response = await fetch(`http://localhost:3000/api/receiver/latest-request-by-user/${email}`, {
             method: "get",
             credentials: "include",
           });
           const responseText = await response.text();
           const data = JSON.parse(responseText);
           if (response.ok) {
+            setRequest(data.request);
             setDonors(data.donors);
+            setAcceptedDonors(data.acceptedDonors);
+            setRequestStatus(data.requestStatus);
           } else {
-            throw new Error(data.message || 'Failed to fetch donors');
+            throw new Error(data.message || 'Failed to fetch request and donors');
           }
         } catch (error) {
-          console.error('Error fetching donors:', error);
+          console.error('Error fetching request and donors:', error);
         }
       }
     };
 
-    fetchDonors();
+    fetchRequestAndDonors();
   }, [userData, userLoading]);
+
+  useEffect(() => {
+    const fetchDonorLocations = async () => {
+      try {
+        const updatedLocations = {};
+        for (const donor of acceptedDonors) {
+          const response = await fetch(`http://localhost:3000/api/donor/email/${donor.email}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const data = await response.json();
+          if (data.success && data.donor.location) {
+            updatedLocations[donor.email] = {
+              latitude: data.donor.location.coordinates[1],
+              longitude: data.donor.location.coordinates[0],
+            };
+          }
+        }
+        setDonorLocations(updatedLocations);
+      } catch (error) {
+        console.error('Error fetching donor locations:', error);
+      }
+    };
+
+    if (acceptedDonors.length > 0) {
+      fetchDonorLocations();
+      const intervalId = setInterval(fetchDonorLocations, 3000); 
+      return () => clearInterval(intervalId);
+    }
+  }, [acceptedDonors]);
+
+  useEffect(() => {
+    socket.on('locationUpdated', (data) => {
+      setDonorLocations(prevLocations => ({
+        ...prevLocations,
+        [data.email]: {
+          latitude: data.latitude,
+          longitude: data.longitude,
+        },
+      }));
+    });
+
+    return () => {
+      socket.off('locationUpdated');
+    };
+  }, []);
+
+  const mapCenter = request ? [request.location.coordinates[1], request.location.coordinates[0]] : [0, 0];
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Find Blood Donors & Blood Banks
@@ -55,7 +116,106 @@ function DonorsNearby() {
           </p>
         </div>
 
-        {/* Donors Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {request && (
+            <div className="mb-12 bg-white rounded-2xl shadow-xl p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Blood Request</h2>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-gray-600">
+                  <FaUser className="text-gray-500" />
+                  <p className="font-medium">{request.name}</p>
+                </div>
+                <div className="flex items-center gap-3 text-gray-600">
+                  <FaTint className="text-gray-500" />
+                  <p className="font-medium">{request.bloodGroup}</p>
+                </div>
+                <div className="flex items-center gap-3 text-gray-600">
+                  <FaMapMarkerAlt className="text-gray-500" />
+                  <p className="font-medium">{request.city}, {request.state}</p>
+                </div>
+                <div className="flex items-center gap-3 text-gray-600">
+                  <FaPhoneAlt className="text-gray-500" />
+                  <p className="font-medium">{request.phone}</p>
+                </div>
+                <div className="flex items-center gap-3 text-gray-600">
+                  <FaEnvelope className="text-gray-500" />
+                  <p className="font-medium">{request.email}</p>
+                </div>
+                <div className="flex items-center gap-3 text-gray-600">
+                  <FaCircle className="text-gray-500" />
+                  <p className="font-medium">Request Status: {requestStatus}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {acceptedDonors.length > 0 && (
+            <div className="mb-12 bg-white rounded-2xl shadow-xl p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Accepted Blood Donors</h2>
+              <div className="space-y-4">
+                {acceptedDonors.map(donor => (
+                  <div key={donor._id} className="space-y-4">
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <FaUser className="text-gray-500" />
+                      <p className="font-medium">{donor.name}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <FaTint className="text-gray-500" />
+                      <p className="font-medium">{donor.bloodGroup}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <FaMapMarkerAlt className="text-gray-500" />
+                      <p className="font-medium">{donor.city}, {donor.state}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <FaPhoneAlt className="text-gray-500" />
+                      <p className="font-medium">{donor.phone}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <FaEnvelope className="text-gray-500" />
+                      <p className="font-medium">{donor.email}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Track Donors and Receiver</h2>
+            <p className="text-gray-600">Real-time tracking of donors and receiver on the map</p>
+          </div>
+
+          {request && (
+            <MapContainer center={mapCenter} zoom={13} style={{ height: "500px", width: "100%" }}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={[request.location.coordinates[1], request.location.coordinates[0]]}>
+                <Popup>
+                  <div>
+                    <h3>{request.name}</h3>
+                    <p>{request.city}, {request.state}</p>
+                  </div>
+                </Popup>
+              </Marker>
+              {acceptedDonors.map(donor => (
+                <Marker key={donor._id} position={[donorLocations[donor.email]?.latitude || donor.location.coordinates[1], donorLocations[donor.email]?.longitude || donor.location.coordinates[0]]}>
+                  <Popup>
+                    <div>
+                      <h3>{donor.name}</h3>
+                      <p>{donor.city}, {donor.state}</p>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          )}
+        </div>
+
         <div className="mb-16">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Available Blood Donors</h2>
@@ -77,7 +237,6 @@ function DonorsNearby() {
                   key={donor._id} 
                   className="bg-white rounded-2xl shadow-xl p-6 transform transition-all duration-300 hover:scale-105"
                 >
-                  {/* Donor Header */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
                       <div className="bg-red-100 p-3 rounded-full">
@@ -93,17 +252,16 @@ function DonorsNearby() {
                     </div>
                     <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${
                       donor.status === 'Available' 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-red-100 text-red-700'
+                        ? 'bg-red-100 text-red-700' 
+                        : 'bg-green-100 text-green-700'
                     }`}>
                       <FaCircle className="text-xs" />
                       <span className="text-sm font-medium">
-                        {donor.status === 'Available' ? 'Not Available' : ' Available'}
+                        {donor?.status === "Available" ? "Not Available" : 'Available'}
                       </span>
                     </div>
                   </div>
 
-                  {/* Donor Details */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-gray-600">
                       <div className="bg-gray-100 p-2 rounded-lg">
@@ -116,6 +274,12 @@ function DonorsNearby() {
                         <FaPhoneAlt className="text-gray-500" />
                       </div>
                       <p className="font-medium">{donor.phone}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <div className="bg-gray-100 p-2 rounded-lg">
+                        <FaEnvelope className="text-gray-500" />
+                      </div>
+                      <p className="font-medium">{donor.email}</p>
                     </div>
                   </div>
                 </div>
@@ -134,7 +298,6 @@ function DonorsNearby() {
           )}
         </div>
 
-        {/* Blood Bank Locator Section */}
         <div className="mt-16">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Find Blood Banks</h2>
