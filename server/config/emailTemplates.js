@@ -581,11 +581,15 @@ export const NEW_REQUEST_TEMPLATE = `
       </td>
     </tr>
 
-    <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 40px;text-align:center;">
-        <a href="/" style="background:#007bff;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:5px;font-size:16px;font-family:'Lato',sans-serif;display:inline-block;">See Receiver Request Details</a>
+      <tr>
+      <td style="overflow-wrap:break-word; word-break:break-word; padding:20px 40px; text-align:center;">
+        <div style="display: flex; justify-content: center; gap: 15px;">
+          <a href="{{acceptLink}}" style="padding: 10px; background: green; color: white; text-decoration: none;">Accept Request</a>
+          <a href="/" style="padding: 10px; background: red; color: white; text-decoration: none;">Reject Request</a>
+        </div>
       </td>
     </tr>
+
 
   </tbody>
 </table>

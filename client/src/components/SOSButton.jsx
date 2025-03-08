@@ -7,7 +7,7 @@ const SOSButton = () => {
   const [hospitalName, setHospitalName] = useState("");
   const [bloodGroups, setBloodGroups] = useState([]);
   const [selectedBloodGroup, setSelectedBloodGroup] = useState("");
-  const [contactNumber, setContactNumber] = useState("")
+  const [contactNumber, setContactNumber] = useState("");
 
   useEffect(() => {
     setIsOpen(true);

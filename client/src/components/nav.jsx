@@ -1,3 +1,5 @@
+
+
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -241,88 +243,76 @@ function Navbar() {
         {/* Mobile Navigation - Updated with Enhanced Options */}
         <div
           className={`md:hidden transition-all duration-300 ${
-            isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          } overflow-hidden`}
+            isMenuOpen ? "max-h-[calc(100vh-4rem)] opacity-100" : "max-h-0 opacity-0"
+          } overflow-y-auto fixed top-16 left-0 right-0 bg-black/95 backdrop-blur-md z-50`}
         >
+          <div className="container mx-auto px-4 py-4">
             <button
-               onClick={handleSOSClick}
-               className="w-full mb-4 px-6 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 shadow-md animate-pulse"
-             >
-               <FaExclamationTriangle className="text-lg" />
-               <span className="font-outfit">SOS Request</span>
-             </button>
-          <div className="flex flex-col gap-2 py-4">
-            <Link
-              to="/home"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
+              onClick={handleSOSClick}
+              className="w-full mb-4 px-6 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 shadow-md animate-pulse hover:from-red-700 hover:to-rose-700 transition-colors"
             >
-              Home
-            </Link>
-            <Link
-              to="/donor"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-            >
-              Donate
-            </Link>
-            <Link
-              to="/request"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-            >
-              Request Blood
-            </Link>
-            <Link
-              to="/leaderboard"
-              className="text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-            >
-              Leaderboard
-            </Link>
-            <Link
-              to="/profile"
-              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <FaUser />
-              <span>View Profile</span>
-            </Link>
-            <Link
-              to="/donor"
-              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <FaTint />
-              <span>Donor</span>
-            </Link>
-            <Link
-              to="/near"
-              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <FaHandHoldingHeart />
-              <span>Bank and Donors</span>
-            </Link>
-            <Link
-              to="/my-donations"
-              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <FaHistory />
-              <span>My Donations</span>
-            </Link>
-            <Link
-                to="/nearby-hospitals"
-                className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit"
-              onClick={() => setIsMenuOpen(false)}
-              >
-                Nearby Hospitals
-              </Link>
-            <div className="border-t border-gray-700 my-2"></div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 text-white hover:text-red-500 transition-colors px-3 py-2 font-medium font-outfit w-full"
-            >
-              <FaSignOutAlt />
-              <span>Logout</span>
+              <FaExclamationTriangle className="text-lg" />
+              <span className="font-outfit">SOS Request</span>
             </button>
+            <div className="flex flex-col gap-2">
+              {[
+                { to: "/home", label: "Home" },
+                { to: "/donor", label: "Donate" },
+                { to: "/request", label: "Request Blood" },
+                { to: "/leaderboard", label: "Leaderboard" },
+              ].map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="text-white hover:text-red-500 transition-colors px-4 py-3 font-medium font-outfit rounded-lg hover:bg-white/10"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+
+              {user?.isLoggedIn && (
+                <>
+                  <div className="border-t border-gray-700/50 my-2"></div>
+                  {[
+                    { to: "/profile", icon: <FaUser />, label: "View Profile" },
+                    { to: "/donor", icon: <FaTint />, label: "Donor" },
+                    { to: "/near", icon: <FaHandHoldingHeart />, label: "Bank and Donors" },
+                    { to: "/my-donations", icon: <FaHistory />, label: "My Donations" },
+                    { to: "/nearby-hospitals", icon: <MdOutlineLocalHospital />, label: "Nearby Hospitals" },
+                  ].map((item) => (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      className="flex items-center gap-3 text-white hover:text-red-500 transition-colors px-4 py-3 font-medium font-outfit rounded-lg hover:bg-white/10"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                  
+                  <div className="border-t border-gray-700/50 my-2"></div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 text-white hover:text-red-500 transition-colors px-4 py-3 font-medium font-outfit w-full rounded-lg hover:bg-white/10"
+                  >
+                    <FaSignOutAlt />
+                    <span>Logout</span>
+                  </button>
+                </>
+              )}
+
+              {!user?.isLoggedIn && (
+                <button
+                  onClick={() => handleAuthClick("/login")}
+                  className="flex items-center gap-3 text-white hover:text-red-500 transition-colors px-4 py-3 font-medium font-outfit rounded-lg hover:bg-white/10"
+                >
+                  <FaSignInAlt />
+                  <span>Login</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

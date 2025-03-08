@@ -20,9 +20,17 @@ import Leaderboard from './components/Leaderboard'
 import MyDonations from './components/MyDonation'
 import NearbyHospitals from './components/NearbyHospitals'
 import UserAuthentication from './components/UserAuthentication'
+import SOSButton from './components/SOSButton'
 
 
 function App() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/serviceWorker.js')
+            .then((reg) => console.log('Service Worker Registered!', reg))
+            .catch((err) => console.error('Service Worker Registration Failed:', err));
+    });
+}
   const location = useLocation();
   const background = location.state && location.state.background;
   
@@ -57,6 +65,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path='/sos' element={<SOSButton/>} />
      
         <Route path="/learn" element={<BloodTypes />} />
         <Route path='/email-verify' element={<EmailVerify/>}/>

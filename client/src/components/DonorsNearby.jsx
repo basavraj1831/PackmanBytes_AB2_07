@@ -81,7 +81,7 @@ function DonorsNearby() {
 
     if (acceptedDonors.length > 0) {
       fetchDonorLocations();
-      const intervalId = setInterval(fetchDonorLocations, 3000); 
+      const intervalId = setInterval(fetchDonorLocations, 3000); // Fetch every 30 seconds
       return () => clearInterval(intervalId);
     }
   }, [acceptedDonors]);
@@ -107,6 +107,7 @@ function DonorsNearby() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Find Blood Donors & Blood Banks
@@ -117,6 +118,7 @@ function DonorsNearby() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Request Info Section */}
           {request && (
             <div className="mb-12 bg-white rounded-2xl shadow-xl p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Blood Request</h2>
@@ -149,6 +151,7 @@ function DonorsNearby() {
             </div>
           )}
 
+          {/* Accepted Donors Info Section */}
           {acceptedDonors.length > 0 && (
             <div className="mb-12 bg-white rounded-2xl shadow-xl p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Accepted Blood Donors</h2>
@@ -182,6 +185,7 @@ function DonorsNearby() {
           )}
         </div>
 
+        {/* Map Section */}
         <div className="mb-16">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Track Donors and Receiver</h2>
@@ -216,6 +220,7 @@ function DonorsNearby() {
           )}
         </div>
 
+        {/* Donors Section */}
         <div className="mb-16">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Available Blood Donors</h2>
@@ -237,6 +242,7 @@ function DonorsNearby() {
                   key={donor._id} 
                   className="bg-white rounded-2xl shadow-xl p-6 transform transition-all duration-300 hover:scale-105"
                 >
+                  {/* Donor Header */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
                       <div className="bg-red-100 p-3 rounded-full">
@@ -262,6 +268,7 @@ function DonorsNearby() {
                     </div>
                   </div>
 
+                  {/* Donor Details */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-gray-600">
                       <div className="bg-gray-100 p-2 rounded-lg">
@@ -298,6 +305,7 @@ function DonorsNearby() {
           )}
         </div>
 
+        {/* Blood Bank Locator Section */}
         <div className="mt-16">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Find Blood Banks</h2>
