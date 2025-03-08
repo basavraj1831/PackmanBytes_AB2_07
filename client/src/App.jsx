@@ -3,7 +3,6 @@ import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from './components/nav'
 import LandingPage from './components/land'
-import About from './components/Leaderboard'
 import Donor from './components/Donor'
 import Home from './components/home'
 import RequestBlood from './components/RequestBlood'
@@ -17,6 +16,10 @@ import DonorsNearby from './components/DonorsNearby'
 import Profile from './components/Profile'
 import DonorList from './components/Donorlist'
 import Update from './components/Update'
+import Leaderboard from './components/Leaderboard'
+import MyDonations from './components/MyDonation'
+import NearbyHospitals from './components/NearbyHospitals'
+import UserAuthentication from './components/UserAuthentication'
 
 
 function App() {
@@ -41,18 +44,24 @@ function App() {
     <div className="min-h-screen">
       <Navbar />
       <Routes location={background || location}>
+        <Route element={<UserAuthentication/>}>
+          <Route path="/donor" element={<Donor />} />
+          <Route path="/request" element={<RequestBlood />} />
+          <Route path="/near" element={<DonorsNearby/>} />
+          <Route path='/profile' element={<Profile/>}/>
+          <Route path="/receiver" element={<DonorList/>} />
+          <Route path="/update" element={<Update/>} />
+          <Route path="/my-donations" element={<MyDonations />} />
+          <Route path="/nearby-hospitals" element={<NearbyHospitals />} />
+        </Route>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/donor" element={<Donor />} />
-        <Route path="/request" element={<RequestBlood />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+     
         <Route path="/learn" element={<BloodTypes />} />
         <Route path='/email-verify' element={<EmailVerify/>}/>
         <Route path='/forgot-password' element={<ResetPassword/>}/>
-        <Route path="/near" element={<DonorsNearby/>} />
-        <Route path='/profile' element={<Profile/>}/>
-        <Route path="/receiver" element={<DonorList/>} />
-        <Route path="/update" element={<Update/>} />
+
       </Routes>
 
       {/* Show auth modals when we have a background location */}
