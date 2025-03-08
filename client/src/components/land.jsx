@@ -1,81 +1,75 @@
+
+
 import Slider from 'react-slick'
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
-import { FaHeart, FaSearch, FaInfoCircle, FaArrowRight, FaBell, FaMapMarkerAlt, FaCalendarAlt, FaPhoneAlt } from 'react-icons/fa'
+import { FaHeart, FaSearch, FaInfoCircle, FaArrowRight, FaBell, FaMapMarkerAlt, FaCalendarAlt, FaPhoneAlt, FaTint } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function LandingPage() {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000,
+    speed: 2000,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2500,
-    arrows: true,
+    autoplaySpeed: 3000,
+    arrows: false,
     fade: false,
-    centerMode: true,
-    centerPadding: '200px',
-    cssEase: "cubic-bezier(0.87, 0.03, 0.41, 0.9)",
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          centerPadding: '100px',
-        }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          centerPadding: '40px',
-        }
-      }
-    ]
+    cssEase: "cubic-bezier(0.87, 0.03, 0.41, 0.9)"
   }
 
   const slides = [
     {
+      id: 1,
       image: "https://img.freepik.com/free-vector/human-blood-donate-white-background_1308-111266.jpg?ga=GA1.1.656503990.1740769311&semt=ais_hybrid",
       title: "Donate Blood, Save Lives",
-      description: "Your donation can help save up to three lives",
-      buttonText: "Start Donating"
+      offer: "Your donation can help save up to three lives",
+      buttonText1: "Start Donating",
+      buttonText2: "Learn More"
     },
     {
+      id: 2,
       image: "https://img.freepik.com/free-vector/red-blood-cells-flowing-background_1017-17842.jpg?ga=GA1.1.656503990.1740769311&semt=ais_hybrid",
       title: "Every Drop Counts",
-      description: "Be a hero in someone's life",
-      buttonText: "Learn More"
+      offer: "Be a hero in someone's life",
+      buttonText1: "Donate Now",
+      buttonText2: "Find More"
     },
     {
+      id: 3,
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkFtWSepPYXjIW86XMczleSp-Q8kZPVC_idA&s",
       title: "Join Our Mission",
-      description: "Together we can make a difference",
-      buttonText: "Get Involved"
+      offer: "Together we can make a difference",
+      buttonText1: "Get Involved",
+      buttonText2: "Learn More"
     },
     {
+      id: 4,
       image: "https://img.freepik.com/free-vector/mobile-medicine-isometric-flowchart-with-online-laboratory-symbols-illustration_1284-31378.jpg?ga=GA1.1.656503990.1740769311&semt=ais_hybrid",
       title: "Emergency Response Network",
-      description: "Our 24/7 emergency blood supply network ensures immediate assistance when every second counts.",
-      buttonText: "Learn More",
-      buttonLink: "/about"
+      offer: "24/7 emergency blood supply network",
+      buttonText1: "Learn More",
+      buttonText2: "Find Centers"
     },
     {
+      id: 5,
       image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1770&auto=format&fit=crop",
       title: "Mobile Blood Donation Camps",
-      description: "Bringing blood donation facilities closer to communities through our mobile donation camps.",
-      buttonText: "Find Camps",
-      buttonLink: "/camps"
-    },
-   
+      offer: "Bringing blood donation facilities closer to you",
+      buttonText1: "Find Camps",
+      buttonText2: "Register Now"
+    }
   ]
 
   const boxes = [
     {
       title: "Donate Blood",
       description: "Every drop matters. Join our life-saving mission.",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhvMoyDTFGIY4hm_kxNnd3EMivLtj_z5KHuw&s",
+      image: "https://www.sriramakrishnahospital.com/wp-content/uploads/2021/06/Blood-Donation-1.jpg",
       link: "/donate",
       icon: <FaHeart className="text-red-500 text-4xl mb-4" />
     },
@@ -224,58 +218,110 @@ function LandingPage() {
     });
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Mission Statement Hero - At the top */}
+      <div className="relative overflow-hidden bg-black py-20">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-rose-500/10"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(220,38,38,0.1),transparent)] opacity-70"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="font-outfit relative">
+              <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+                <div className="w-24 h-1 bg-gradient-to-r from-red-500 to-rose-500"></div>
+              </div>
+              <span className="block text-red-500 text-lg font-semibold tracking-wide mb-3">
+                OUR MISSION
+              </span>
+              <span className="block text-white text-5xl sm:text-6xl md:text-7xl font-bold leading-tight mb-4">
+                When Life Calls,
+              </span>
+              <span className="block text-5xl sm:text-6xl md:text-7xl font-bold leading-tight bg-gradient-to-r from-red-500 to-rose-500 bg-clip-text text-transparent">
+                We Answer.
+              </span>
+            </h2>
+            
+            {/* Decorative Elements */}
+            <div className="mt-8 flex justify-center items-center">
+              <div className="heartbeat-line">
+                <svg width="200" height="40" viewBox="0 0 200 40">
+                  <polyline
+                    className="heartbeat"
+                    points="0,20 40,20 50,20 60,0 70,40 80,20 90,20 100,20 110,0 120,40 130,20 140,20 200,20"
+                    fill="none"
+                    stroke="rgb(239, 68, 68)"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Call to Action */}
+            <div className="mt-10">
+              <button 
+                onClick={() => navigate('/donor')}
+                className="
+                  group
+                  inline-flex items-center gap-3
+                  px-8 py-4 
+                  bg-gradient-to-r from-red-600 to-rose-600
+                  hover:from-red-700 hover:to-rose-700
+                  text-white 
+                  rounded-full 
+                  text-lg font-semibold
+                  shadow-lg hover:shadow-xl
+                  transform hover:-translate-y-0.5
+                  transition-all duration-300
+                "
+              >
+                <FaTint className="text-xl group-hover:scale-110 transition-transform" />
+                <span>Become a Donor</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Side Decorative Elements */}
+        <div className="absolute -left-24 top-1/2 transform -translate-y-1/2 rotate-45">
+          <div className="w-48 h-96 bg-gradient-to-r from-red-500/10 to-transparent blur-3xl"></div>
+        </div>
+        <div className="absolute -right-24 top-1/2 transform -translate-y-1/2 -rotate-45">
+          <div className="w-48 h-96 bg-gradient-to-l from-rose-500/10 to-transparent blur-3xl"></div>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-white -z-10"></div>
         <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-red-50 rounded-full filter blur-3xl opacity-50 transform translate-x-1/2 -translate-y-1/2"></div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
           <div className="max-w-5xl mx-auto">
-            {/* Top badge */}
-            <div className="flex justify-center mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-100 text-red-600 font-semibold text-sm sm:text-base animate-pulse">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
-                URGENT NEED FOR BLOOD DONORS
-              </div>
-            </div>
-
-            {/* Main heading */}
-            <div className="text-center mb-12">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <div className="text-center space-y-8">
+              {/* Inspiring Message */}
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Your Blood Can Give Someone
-                <span className="block mt-2">
-                  <span className="relative inline-block">
-                    <span className="relative z-10 text-red-600">A Second Chance</span>
-                    <div className="absolute -bottom-2 left-0 w-full h-3 bg-red-100 -skew-x-12 -z-10 transform origin-left scale-x-100"></div>
-                  </span>
-                  <span className="text-gray-900"> at Life</span>
-                </span>
-              </h1>
-              
-              {/* Stats row */}
-              <div className="flex flex-wrap justify-center items-center gap-8 sm:gap-12 mb-10 py-12">
+                <span className="block text-red-600">A Second Chance at Life</span>
+              </h2>
+
+              {/* Statistics Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
                 {stats.map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className="text-3xl sm:text-4xl font-bold text-red-600 mb-2">{stat.number}</div>
-                    <div className="text-gray-600 text-sm sm:text-base font-medium">{stat.label}</div>
+                  <div key={index} className="p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                    <div className="text-3xl font-bold text-red-600 mb-2">{stat.number}</div>
+                    <div className="text-gray-600 font-medium">{stat.label}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Description */}
-              <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10">
-                Join our mission to save lives. Your single donation can help save up to 
-                <span className="font-semibold text-red-600"> three lives</span>. Be the reason someone sees another sunrise.
-              </p>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+              {/* Call to Action Buttons */}
+              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-12">
                 <button className="group bg-red-600 text-white px-8 py-4 rounded-full hover:bg-red-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg text-lg">
                   Start Saving Lives
                   <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
@@ -291,53 +337,35 @@ function LandingPage() {
       </div>
 
       {/* Slider Section */}
-      <div className="relative">
+      <div className="relative py-6 -mt-8 bg-gradient-to-br from-gray-100 via-red-50 to-white">
         <div className="slider-wrapper max-w-[95%] mx-auto">
           <Slider {...settings}>
-            {slides.map((slide, index) => (
-              <div key={index} className="slider-item px-3">
-                <div 
-                  className="relative h-[500px] rounded-2xl overflow-hidden group transform transition-all duration-500 hover:scale-[1.02] shadow-2xl"
-                  style={{
-                    backgroundImage: `url(${slide.image})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }}
-                >
-                  {/* Animated border effect */}
-                  <div className="absolute inset-0 border-2 border-white/30 rounded-2xl scale-[0.98] group-hover:scale-100 transition-transform duration-500"></div>
-                  
-                  {/* Corner decorations */}
-                  <div className="absolute top-6 left-6 w-16 h-16 border-t-4 border-l-4 border-white/70 rounded-tl-2xl transform -translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-500"></div>
-                  <div className="absolute bottom-6 right-6 w-16 h-16 border-b-4 border-r-4 border-white/70 rounded-br-2xl transform translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-500"></div>
-
-                  {/* Content overlay with enhanced gradients */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-black/50 group-hover:from-red-600/30 group-hover:to-black/60 transition-all duration-500">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(0,0,0,0)_0%,_rgba(0,0,0,0.3)_100%)] opacity-70 group-hover:opacity-90 transition-opacity duration-500"></div>
-                    
-                    <div className="relative h-full flex flex-col items-center justify-center text-center p-8">
-                      {/* Title with glow effect */}
-                      <div className="relative mb-6 transform group-hover:-translate-y-2 transition-transform duration-500">
-                        <div className="absolute inset-0 bg-red-600/20 blur-2xl rounded-full scale-150 animate-pulse"></div>
-                        <h2 className="text-5xl font-bold text-white relative">
-                          {slide.title}
-                        </h2>
-                      </div>
-                      
-                      {/* Description with fade-in effect */}
-                      <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto font-medium tracking-wide opacity-0 group-hover:opacity-100 transform group-hover:translate-y-0 translate-y-4 transition-all duration-500 delay-100">
-                        {slide.description}
-                      </p>
-                      
-                      {/* Glowing button */}
-                      <button className="relative group/btn transform group-hover:translate-y-0 translate-y-4 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200">
-                        <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-500 rounded-full blur-md group-hover/btn:blur-xl transition-all duration-300"></div>
-                        <div className="relative bg-gradient-to-r from-red-600 to-red-500 text-white px-8 py-3 rounded-full transform hover:scale-105 hover:shadow-2xl flex items-center gap-2">
-                          <span className="font-semibold">{slide.buttonText}</span>
-                          <FaArrowRight className="group-hover/btn:translate-x-1 transition-transform" />
-                        </div>
+            {slides.map((slide) => (
+              <div key={slide.id} className="px-4">
+                <div className="slide-content flex flex-col-reverse md:flex-row items-center justify-between py-8 md:px-14 px-5 rounded-2xl min-h-[500px] bg-white">
+                  <div className="md:pl-8 mt-10 md:mt-0 max-w-xl w-full md:w-1/2">
+                    <p className="slide-description text-red-600 font-medium mb-2 tracking-wide uppercase text-sm">
+                      {slide.offer}
+                    </p>
+                    <h2 className="slide-title text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-6 leading-tight">
+                      {slide.title}
+                    </h2>
+                    <div className="slide-buttons flex items-center gap-4">
+                      <button className="px-8 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-full hover:from-red-700 hover:to-red-600 transition-all duration-300 font-medium hover:shadow-xl transform hover:-translate-y-0.5">
+                        {slide.buttonText1}
+                      </button>
+                      <button className="group flex items-center gap-2 px-6 py-3 font-medium text-gray-700 hover:text-red-600 transition-colors">
+                        {slide.buttonText2}
+                        <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                       </button>
                     </div>
+                  </div>
+                  <div className="slide-image-container flex items-center justify-center w-full md:w-1/2 h-[300px] md:h-[400px] p-6">
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="slide-image w-full h-full object-contain max-w-[400px]"
+                    />
                   </div>
                 </div>
               </div>
@@ -347,7 +375,7 @@ function LandingPage() {
       </div>
 
       {/* Updated Cards Section */}
-      <div className="container mx-auto px-4 py-20 max-w-7xl">
+      <div className="container mx-auto px-4 py-20 max-w-7xl bg-white">
         <div className="text-center mb-20">
           <h1 className="text-5xl font-bold text-gray-800 mb-6">Save Lives Through Blood Donation</h1>
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">Your donation can help save up to three lives. Join our mission to make a difference in someone's life today.</p>
@@ -551,6 +579,74 @@ function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer Section */}
+      <footer className="bg-black text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><Link to="/about" className="hover:text-red-500 transition-colors">About Us</Link></li>
+                <li><Link to="/donor" className="hover:text-red-500 transition-colors">Donate Blood</Link></li>
+                <li><Link to="/request" className="hover:text-red-500 transition-colors">Request Blood</Link></li>
+                <li><Link to="/contact" className="hover:text-red-500 transition-colors">Contact Us</Link></li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <ul className="space-y-2">
+                <li><Link to="/faq" className="hover:text-red-500 transition-colors">FAQs</Link></li>
+                <li><Link to="/privacy" className="hover:text-red-500 transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="hover:text-red-500 transition-colors">Terms of Service</Link></li>
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2">
+                  <FaMapMarkerAlt className="text-red-500" />
+                  <span>123 Blood Bank Street</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <FaPhoneAlt className="text-red-500" />
+                  <span>+1 234 567 890</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <FaCalendarAlt className="text-red-500" />
+                  <span>Mon - Sat: 8:00 - 17:00</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Newsletter */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
+              <p className="text-gray-400 mb-4">Subscribe to our newsletter for updates.</p>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  className="bg-gray-800 text-white px-4 py-2 rounded-lg flex-grow"
+                />
+                <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 Blood Bank. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
