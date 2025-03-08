@@ -1,11 +1,13 @@
 import express from 'express';
-import { acceptLink, addReceiver, getAllReceivers, getLatestreceiver,  } from '../controllers/receiverController.js';
+import { acceptRequest, addReceiver, getAllPriorityReceivers, getAllReceivers, getLatestRequestByUser, sendEmailToUsers } from '../controllers/receiverController.js';
 
 const router = express.Router();
 
 router.post('/add-receiver', addReceiver);
 router.get('/', getAllReceivers);
-router.get('/get-latest-request/:email', getLatestreceiver);
-router.post('/accept/:receiverId/:donorId', acceptLink);
+router.get('/latest-request-by-user/:email', getLatestRequestByUser);
+router.get('/accept-request', acceptRequest);
+router.post('/getAllPriorityReceivers', getAllPriorityReceivers);
+router.post('/sos', sendEmailToUsers);
 
 export default router;

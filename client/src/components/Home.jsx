@@ -8,7 +8,7 @@ import {
   FaCalendarAlt, FaBell, FaArrowRight, FaUsers, FaAward, FaPhone, FaEnvelope, FaFacebook, FaTwitter, FaInstagram, FaLinkedin
 } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function Home() {
   const user = useSelector((state) => state.user);
@@ -25,9 +25,62 @@ function Home() {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [donorResponses, setDonorResponses] = useState([]);
   const [receiverRequests, setReceiverRequests] = useState([]);
+  const [location, setLocation] = useState(null);
+  const [error, setError] = useState(null);
+  const {pathname} = useLocation();
 
   useEffect(() => {
-    // Fetch donors from the backend
+    const fetchReceivers = async () => {
+      if (!navigator.geolocation) {
+        setError("Geolocation is not supported by your browser.");
+        return;
+      }
+  
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 2000,
+      };
+  
+      const success = async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setLocation({ latitude, longitude });
+  
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/receiver/getAllPriorityReceivers",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ location: { type: "Point", coordinates: [longitude, latitude] } }),
+            }
+          );
+  
+          const data = await response.json();
+          if (data.success) {
+            setReceiverRequests(data.receivers);
+          } else {
+            setError(data.message || "Failed to fetch nearby receivers.");
+          }
+        } catch (err) {
+          setError("Error fetching receivers from the server.");
+        }
+      };
+  
+      const geoError = (err) => {
+        setError(err.code === 1 ? "Please allow location access." : "Cannot get current location.");
+      };
+  
+      const watcher = navigator.geolocation.watchPosition(success, geoError, options);
+  
+      return () => {
+        navigator.geolocation.clearWatch(watcher);
+      };
+    };
+    fetchReceivers();
+  }, [pathname]);
+
+  useEffect(() => {
     const fetchDonors = async () => {
       try {
         console.log('Fetching donors...');
@@ -39,23 +92,10 @@ function Home() {
       }
     };
 
-    // Fetch receivers from the backend
-    const fetchReceivers = async () => {
-      try {
-        console.log('Fetching receivers...');
-        const response = await axios.get('http://localhost:3000/api/receiver');
-        console.log('Receivers fetched:', response.data.receivers);
-        setReceiverRequests(response.data.receivers || []);
-      } catch (error) {
-        console.error('Error fetching receivers:', error);
-      }
-    };
-
+    
     fetchDonors();
-    fetchReceivers();
   }, []);
 
-  // Filter functions
   const filterDonors = (donors) => {
     return donors.filter(donor => {
       const searchTermLower = donorSearchTerm.toLowerCase();
@@ -91,7 +131,6 @@ function Home() {
     });
   };
 
-  // Add this function to get unique locations
   const getUniqueLocations = () => {
     const locations = new Set();
     
@@ -110,7 +149,6 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-      {/* New Hero Section */}
       <div className="relative bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
@@ -166,9 +204,7 @@ function Home() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
-        {/* Tabs */}
         <div className="flex justify-center mb-8">
           <div className="bg-white rounded-xl shadow-sm p-1 inline-flex">
             <button
@@ -194,7 +230,6 @@ function Home() {
           </div>
         </div>
 
-        {/* Search and Filter Section */}
         <div className="max-w-4xl mx-auto mb-8">
           <div className="bg-white rounded-2xl shadow-md p-6">
             <div className="flex items-center justify-between mb-4">
@@ -210,7 +245,6 @@ function Home() {
               </button>
             </div>
 
-            {/* Search Bar */}
             <div className="relative">
               <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -222,7 +256,6 @@ function Home() {
               />
             </div>
 
-            {/* Filter Options */}
             {isFilterVisible && (
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 animate-fadeIn">
                 <div>
@@ -255,9 +288,9 @@ function Home() {
             )}
           </div>
         </div>
+        <p className='text-sm italic text-red-600 text-center my-5'>***Please refresh page to load donors and receivers***</p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
-          {/* Donors Section */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -270,7 +303,6 @@ function Home() {
                 </div>
               </div>
               
-              {/* Donor Cards with Enhanced Scrollbar */}
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 {filterDonors(donorResponses).map(donor => (
                   <div key={donor._id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-red-100">
