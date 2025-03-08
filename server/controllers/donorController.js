@@ -20,6 +20,23 @@ export const getDonors = async (req, res, next) => {
   }
 };
 
+export const getLeaderboardDonors = async (req, res, next) => {
+  try {
+    console.log('Fetching all donors...');
+    const donors = await Donor.find()
+      .sort({ donateCount: -1 }) 
+      .limit(10);
+    console.log('Donors fetched:', donors);
+    res.status(200).json({
+      success: true,
+      donors,
+    });
+  } catch (error) {
+    console.error('Error fetching donors:', error);
+    next(handleError(500, error.message));
+  }
+};
+
 // ✅ Add a new donor
 export const addDonor = async (req, res, next) => {
   try {
@@ -99,38 +116,36 @@ export const getDonor = async (req, res, next) => {
   }
 };
 
-// ✅ Update donor details
+// ✅ Fetch a donor by email
+export const getDonorByEmail = async (req, res, next) => {
+  try {
+    const { email } = req.params;
+    const donor = await Donor.findOne({ email });
+    if (!donor) {
+      return next(handleError(404, "Donor not found"));
+    }
+    res.status(200).json({
+      success: true,
+      donor,
+    });
+  } catch (error) {
+    console.error('Error fetching donor by email:', error);
+    next(handleError(500, error.message));
+  }
+};
+
+// ✅ Update donor details using email
 export const updateDonor = async (req, res, next) => {
   try {
-    const { donorid } = req.params;
-    const { name, email, phone, age, gender, bloodGroup, location, available, city, district, state, country } = req.body;
+    const { email } = req.params;
+    const { status } = req.body;
 
-    if (!location || !location.coordinates || location.coordinates.length !== 2) {
-      return res.status(400).json({
-        success: false,
-        message: "Location must include both latitude and longitude.",
-      });
-    }
-
-    const donor = await Donor.findById(donorid);
+    const donor = await Donor.findOne({ email });
     if (!donor) {
       return next(handleError(404, "Donor not found"));
     }
 
-    donor.name = name;
-    donor.phone = phone;
-    donor.age = age;
-    donor.gender = gender;
-    donor.bloodGroup = bloodGroup;
-    donor.location = {
-      type: "Point",
-      coordinates: [location.coordinates[0], location.coordinates[1]],
-    };
-    donor.available = available;
-    donor.city = city;
-    donor.district = district;
-    donor.state = state;
-    donor.country = country;
+    donor.status = status;
 
     await donor.save();
 
@@ -145,11 +160,51 @@ export const updateDonor = async (req, res, next) => {
   }
 };
 
-// ✅ Delete donor
+// ✅ Update donor location in real-time
+export const updateDonorLocation = async (req, res, next) => {
+  try {
+    const { email } = req.params;
+    const { longitude, latitude } = req.body;
+    
+    const donor = await Donor.findOne({ email });
+    if (!donor) {
+      return res.status(404).json({
+        success: false,
+        message: "Donor not found"
+      });
+    }
+
+    // Update coordinates
+    if (!donor.location) {
+      donor.location = {
+        type: "Point",
+        coordinates: [longitude, latitude]
+      };
+    } else {
+      donor.location.coordinates = [longitude, latitude];
+    }
+
+    const updatedDonor = await donor.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Location updated successfully",
+      donor: updatedDonor
+    });
+  } catch (error) {
+    console.error("Error updating location:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Error updating location"
+    });
+  }
+};
+
+// ✅ Delete donor using email
 export const deleteDonor = async (req, res, next) => {
   try {
-    const { donorid } = req.params;
-    const deletedDonor = await Donor.findByIdAndDelete(donorid);
+    const { email } = req.params;
+    const deletedDonor = await Donor.findOneAndDelete({ email });
 
     if (!deletedDonor) {
       return next(handleError(404, "Donor not found"));
