@@ -10,6 +10,7 @@ import {
   FaTint,
   FaHandHoldingHeart,
   FaHistory,
+  FaExclamationTriangle,
 } from "react-icons/fa";
 import { MdOutlineLocalHospital } from "react-icons/md";
 
@@ -33,6 +34,10 @@ function Navbar() {
     });
     setIsMenuOpen(false);
   };
+
+  const handleSOSClick = () => {
+    navigate('/sos')
+  }
 
   const handleLogout = async () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen)
@@ -128,6 +133,32 @@ function Navbar() {
                 Leaderboard
 
               </Link>
+              <button
+                 onClick={handleSOSClick}
+                 className="
+                   group
+                   ml-4
+                   px-5 py-2
+                   bg-gradient-to-r from-red-600 to-rose-600
+                   hover:from-red-700 hover:to-rose-700
+                   text-white
+                   rounded-full
+                   font-medium
+                   shadow-lg hover:shadow-xl
+                   transform 
+                   transition-all duration-300
+                   animate-pulse hover:animate-none
+                   flex items-center gap-2
+                   border border-red-400
+                 "
+               >
+                 <FaExclamationTriangle className="
+                   text-lg
+                   group-hover:scale-110
+                   transition-transform duration-300
+                 " />
+                 <span className="font-outfit">SOS Request</span>
+               </button>
             </div>
           </div>
 
@@ -213,6 +244,13 @@ function Navbar() {
             isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           } overflow-hidden`}
         >
+            <button
+               onClick={handleSOSClick}
+               className="w-full mb-4 px-6 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 shadow-md animate-pulse"
+             >
+               <FaExclamationTriangle className="text-lg" />
+               <span className="font-outfit">SOS Request</span>
+             </button>
           <div className="flex flex-col gap-2 py-4">
             <Link
               to="/home"

@@ -165,7 +165,7 @@ export const sendEmailToUsers = async (req, res, next) => {
           </div>
     
           <p style="margin-top: 20px; font-size: 14px; color: #666;">
-            Thank you for your kindness and support! ❤  
+            Thank you for your kindness and support...! ❤  
           </p>
         </div>`,
         })
